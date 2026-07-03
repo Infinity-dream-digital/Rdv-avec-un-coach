@@ -55,8 +55,10 @@ header{
   border-bottom:1px solid var(--g2);
 }
 .header-inner{max-width:980px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.01em;text-transform:uppercase}
+.logo{font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.01em;text-transform:uppercase;margin-left: 5px;}
 .logo span{color:var(--g3)}
+.head{display: flex; align-items: center;}
+.imglogo{width:35px;height:35px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 nav a{font-size:13px;font-weight:500;margin-left:28px;color:var(--black);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px}
 nav a:hover{border-color:var(--black)}
 @media (max-width:600px){nav{display:none}}
@@ -125,14 +127,14 @@ nav a:hover{border-color:var(--black)}
   display:flex;align-items:center;gap:16px;
 }
 .photo-preview{
-  width:64px;height:64px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);
+  width:150px;height:150px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);
   display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
 }
 .photo-preview img{width:100%;height:100%;object-fit:cover}
 .photo-preview .ph-ph{font-size:22px;color:var(--g3)}
 .photo-upload input[type=file]{font-size:13px}
 
-.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .choice-grid.types{grid-template-columns:repeat(3,1fr)}
 @media (max-width:600px){.choice-grid.types{grid-template-columns:1fr}}
 .choice-card{
@@ -229,7 +231,10 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
 <header>
   <div class="header-inner">
+    <div class="head">
+      <img class="imglogo" src="./Bloom Church-logo ok-03.png">
     <div class="logo">RDV <span>avec mon</span> Coach</div>
+    </div>
     <nav>
       <a href="#types">Types de RDV</a>
       <a href="#reserver">Réserver</a>
@@ -239,8 +244,8 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
 <!-- ===== HERO ===== -->
 <section class="hero">
-  <span class="eyebrow">Coach Melyou · Coach Moise</span>
-  <h1>Réservez votre moment<br>avec un coach</h1>
+  <span class="eyebrow"> Coach Moise</span>
+  <h1>Réservez votre moment<br>avec coach Moise</h1>
   <p>Inscrivez-vous en quelques secondes pour un entretien, une salutation ou tout autre besoin. Choisissez l'heure qui vous convient — le créneau s'ajuste automatiquement.</p>
   <div class="hero-cta"><a href="#reserver" class="btn">Prendre rendez-vous</a></div>
 </section>
@@ -251,26 +256,26 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Trois façons de venir nous voir</h2>
   <div class="types-grid">
     <div class="type-info">
-      <div class="dur">45 <small>MIN</small></div>
+      <div class="dur">20 <small>MIN</small></div>
       <h3>Entretien</h3>
       <p>Un temps d'échange approfondi avec votre coach.</p>
     </div>
     <div class="type-info">
-      <div class="dur">05 <small>MIN</small></div>
-      <h3>Salutation</h3>
-      <p>Un bref passage pour saluer votre coach.</p>
+      <div class="dur">2 <small>MIN</small></div>
+      <h3>prière</h3>
+      <p>Un moment de prière en privé.</p>
     </div>
     <div class="type-info">
-      <div class="dur">15 <small>MIN</small></div>
-      <h3>Autre chose</h3>
-      <p>Pour toute autre demande rapide.</p>
+      <div class="dur">3 <small>MIN</small></div>
+      <h3>Information</h3>
+      <p>Pour toute demande rapide ou information à faire passer.</p>
     </div>
   </div>
 </section>
 
 <!-- ===== COMMENT CA MARCHE ===== -->
 <section>
-  <span class="eyebrow">Comment ça marche</span>
+  <span class="eyebrow">Comment ça marche ?</span>
   <div class="steps">
     <div class="step"><span class="snum mono">01</span><h3>Choisissez</h3><p>Votre coach, le type de rendez-vous et l'heure souhaitée.</p></div>
     <div class="step"><span class="snum mono">02</span><h3>On ajuste</h3><p>Si le créneau est déjà pris, on vous propose l'heure disponible la plus proche.</p></div>
@@ -297,21 +302,41 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       </div>
     </div>
 
+
+
     <div class="field">
-      <label>Votre coach</label>
-      <div class="choice-grid" id="coachChoice">
-        <div class="choice-card" data-coach="Coach Melyou"><div class="cname">Coach Melyou</div></div>
-        <div class="choice-card" data-coach="Coach Moise"><div class="cname">Coach Moise</div></div>
+        <label>Votre département</label>
+        <div class="choice-grid" id="coachChoice">
+          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
+          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
+          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
+          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
+          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
+          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
+          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
+          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
+          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
+          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
+          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
+          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
+          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
+        </div>
       </div>
-    </div>
+    
 
     <div class="field">
       <label>Type de rendez-vous</label>
       <div class="choice-grid types" id="typeChoice">
-        <div class="choice-card" data-type="entretien" data-dur="45"><div class="cname">Entretien</div><div class="cdur">45 MIN</div></div>
-        <div class="choice-card" data-type="salutation" data-dur="5"><div class="cname">Salutation</div><div class="cdur">5 MIN</div></div>
-        <div class="choice-card" data-type="autre" data-dur="15"><div class="cname">Autre chose</div><div class="cdur">15 MIN</div></div>
+        <div class="choice-card" data-type="entretien" data-dur="20"><div class="cname">Entretien</div><div class="cdur">20 MIN</div></div>
+        <div class="choice-card" data-type="prière" data-dur="2"><div class="cname">Prière</div><div class="cdur">2 MIN</div></div>
+        <div class="choice-card" data-type="information" data-dur="3"><div class="cname">Information</div><div class="cdur">3 MIN</div></div>
       </div>
+    </div>
+
+  
+     
+    <div class="field">
+      <label>Les rendez vous sont prévus pour les Dimanche uniquement dans les intervalles suivants: 10h30-12h50 et 16h20-18h20 </label>
     </div>
 
     <div class="field-row">
@@ -326,7 +351,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     </div>
 
     <div class="ruler-wrap" id="rulerWrap" style="display:none">
-      <div class="ruler-label"><span>07H00</span><span id="rulerCoachLabel"></span><span>21H00</span></div>
+      <div class="ruler-label"><span>10H00</span><span id="rulerCoachLabel"></span><span>21H00</span></div>
       <div class="ruler" id="ruler"></div>
       <div class="ruler-legend">
         <span><i class="sw sw-busy"></i>Créneau pris</span>
@@ -412,10 +437,21 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         </div>
       </div>
       <div class="field">
-        <label>Coach</label>
+        <label>Votre département</label>
         <div class="choice-grid" id="adminCoachChoice">
-          <div class="choice-card" data-coach="Coach Melyou"><div class="cname">Coach Melyou</div></div>
-          <div class="choice-card" data-coach="Coach Moise"><div class="cname">Coach Moise</div></div>
+          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
+          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
+          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
+          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
+          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
+          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
+          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
+          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
+          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
+          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
+          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
+          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
+          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
         </div>
       </div>
       <div class="field">
@@ -441,10 +477,10 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
 <script>
 /* ================= CONFIG ================= */
-const ADMIN_CODE = "Yann-x14";
-const DURATIONS = { entretien: 45, salutation: 5, autre: 15 };
-const TYPE_LABELS = { entretien: "Entretien", salutation: "Salutation", autre: "Autre chose" };
-const OPENING = 7*60;      // 07h00
+const ADMIN_CODE = "Protocoles2026";
+const DURATIONS = { entretien: 20, prière: 2, information: 3 };
+const TYPE_LABELS = { entretien: "Entretien", prière: "Prière", information: "Information" };
+const OPENING = 10*60;      // 10h00
 const CLOSING = 21*60;     // 21h00
 const SUNDAY_MARGIN_START = 18*60; // 18h00
 const SUNDAY_MARGIN_END = 21*60;   // 21h00 (marge de 3h)
@@ -493,7 +529,7 @@ function checkSlot(coach, date, type, requestedStart, isAdmin){
   const end = start + duration;
 
   if(start < OPENING || end > CLOSING){
-    return {ok:false, reason:"Les rendez-vous se prennent entre 7h00 et 21h00."};
+    return {ok:false, reason:"Les rendez-vous se prennent entre 10h00 et 21h00."};
   }
 
   if(isSunday(date) && !isAdmin){
@@ -651,7 +687,7 @@ document.getElementById('submitBtn').addEventListener('click', ()=>{
   document.getElementById('confirmCard').classList.remove('show');
 
   if(!name){ showPubError("Merci d'indiquer votre nom complet."); return; }
-  if(!pubState.coach){ showPubError("Merci de choisir un coach."); return; }
+  if(!pubState.coach){ showPubError("Merci d'indiquer votre département."); return; }
   if(!pubState.type){ showPubError("Merci de choisir un type de rendez-vous."); return; }
   if(!date || !time){ showPubError("Merci de choisir une date et une heure."); return; }
 
@@ -689,7 +725,7 @@ document.getElementById('submitBtn').addEventListener('click', ()=>{
   document.getElementById('confirmPhoto').style.display = appt.photo ? 'block':'none';
   document.getElementById('confirmTitle').textContent = "Rendez-vous confirmé";
   document.getElementById('confirmDetail').textContent =
-    name+" · "+TYPE_LABELS[pubState.type]+" avec "+pubState.coach+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
+    name+" de "+pubState.coach+" pour "+TYPE_LABELS[pubState.type]+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
   document.getElementById('confirmCard').classList.add('show');
 
   updatePubRuler();
@@ -702,7 +738,7 @@ function showPubError(text){
 
 function formatDateFr(dateStr){
   const d = new Date(dateStr+'T00:00:00');
-  const days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const days=['Dimanche'];
   const months=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
   return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
 }

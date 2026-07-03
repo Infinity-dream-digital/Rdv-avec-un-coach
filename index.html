@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDV avec mon Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   NOTE IMPORTANTE SUR LE STOCKAGE
+   Ce site enregistre les rendez-vous dans la mémoire du navigateur
+   (localStorage) de l'appareil utilisé. Si tu veux que les
+   inscriptions faites par les visiteurs sur LEUR téléphone soient
+   visibles dans l'espace admin sur TON téléphone, il faudra à terme
+   brancher une vraie base de données partagée. Pour l'instant,
+   ce site fonctionne parfaitement si tu l'utilises sur un même
+   appareil (ex: une tablette à l'entrée de l'église pour les
+   inscriptions, consultée aussi pour l'admin).
+   ============================================================ */
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#0a0a0a;
+  --white:#ffffff;
+  --g1:#f5f5f4;
+  --g2:#e4e3e1;
+  --g3:#b5b3af;
+  --g4:#6b6965;
+  --red:#c0392b;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--white);
+  color:var(--black);
+  line-height:1.6;
+  font-weight:400;
+}
+h1,h2,h3{font-family:'Unbounded',sans-serif;letter-spacing:-0.01em}
+.mono{font-family:'IBM Plex Mono',monospace}
+section{padding:100px 24px;max-width:980px;margin:0 auto}
+@media (max-width:768px){section{padding:64px 20px}}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--g4);margin-bottom:18px;display:block;
+}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:'Inter',sans-serif}
+
+/* ===== HEADER ===== */
+header{
+  position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--g2);
+}
+.header-inner{max-width:980px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;letter-spacing:-0.01em;text-transform:uppercase;margin-left: 5px;}
+.logo span{color:var(--g3)}
+.head{display: flex; align-items: center;}
+.imglogo{width:35px;height:35px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+nav a{font-size:13px;font-weight:500;margin-left:28px;color:var(--black);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px}
+nav a:hover{border-color:var(--black)}
+@media (max-width:600px){nav{display:none}}
+
+/* ===== HERO ===== */
+.hero{text-align:center;padding-top:100px;padding-bottom:60px}
+.hero h1{
+  font-size:clamp(34px,6vw,64px);line-height:1.05;text-transform:uppercase;font-weight:800;
+}
+.hero p{color:var(--g4);font-size:16px;max-width:480px;margin:22px auto 0}
+.hero-cta{margin-top:36px}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border:1.5px solid var(--black);
+  font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--black);color:var(--white);
+  transition:.2s;
+}
+.btn:hover{background:var(--white);color:var(--black)}
+.btn-outline{background:var(--white);color:var(--black)}
+.btn-outline:hover{background:var(--black);color:var(--white)}
+.btn-sm{padding:9px 16px;font-size:11px}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btn[disabled]:hover{background:var(--black);color:var(--white)}
+
+/* ===== TYPES SECTION ===== */
+.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+@media (max-width:700px){.types-grid{grid-template-columns:1fr}}
+.type-info{border:1px solid var(--g2);padding:30px 24px}
+.type-info .dur{font-family:'Unbounded',sans-serif;font-size:34px;font-weight:800}
+.type-info .dur small{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:400;color:var(--g4)}
+.type-info h3{font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-top:10px}
+.type-info p{font-size:13.5px;color:var(--g4);margin-top:8px}
+
+/* ===== RULER (signature element) ===== */
+.ruler-wrap{margin-top:22px}
+.ruler-label{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--g4);margin-bottom:6px;letter-spacing:.5px}
+.ruler{
+  position:relative;height:34px;background:var(--g1);border:1px solid var(--g2);overflow:hidden;
+}
+.ruler .block{position:absolute;top:0;height:100%;background:var(--black)}
+.ruler .block.margin{background:repeating-linear-gradient(45deg, var(--g3) 0 4px, var(--g2) 4px 8px)}
+.ruler .block.preview{background:var(--red);opacity:.75}
+.ruler .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--g2)}
+.ruler-legend{display:flex;gap:18px;margin-top:10px;font-size:11px;color:var(--g4);flex-wrap:wrap}
+.ruler-legend span{display:inline-flex;align-items:center;gap:6px}
+.ruler-legend .sw{width:10px;height:10px;display:inline-block}
+.sw-busy{background:var(--black)}
+.sw-margin{background:repeating-linear-gradient(45deg, var(--g3) 0 3px, var(--g2) 3px 6px)}
+.sw-new{background:var(--red)}
+
+/* ===== FORM ===== */
+.form-box{border:1px solid var(--g2);padding:48px 40px;margin-top:40px}
+@media (max-width:768px){.form-box{padding:32px 24px}}
+.field{margin-bottom:26px}
+.field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--g4);margin-bottom:10px;font-weight:600}
+.field input[type=text],.field input[type=date],.field input[type=time]{
+  width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px;outline:none;background:var(--white);
+  transition:border-color .2s;
+}
+.field input:focus{border-color:var(--black)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:600px){.field-row{grid-template-columns:1fr}}
+
+.photo-upload{
+  display:flex;align-items:center;gap:16px;
+}
+.photo-preview{
+  width:150px;height:150px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
+}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.photo-preview .ph-ph{font-size:22px;color:var(--g3)}
+.photo-upload input[type=file]{font-size:13px}
+
+.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.choice-grid.types{grid-template-columns:repeat(2,1fr)}
+@media (max-width:600px){.choice-grid.types{grid-template-columns:1fr}}
+.choice-card{
+  border:1.5px solid var(--g2);padding:18px 16px;cursor:pointer;text-align:center;transition:.15s;position:relative;
+}
+.choice-card:hover{border-color:var(--g3)}
+.choice-card.selected{border-color:var(--black);background:var(--black);color:var(--white)}
+.choice-card .cname{font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+.choice-card .cdur{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:4px;opacity:.7}
+
+.msg-box{
+  margin-top:24px;padding:18px 20px;border:1.5px solid var(--black);font-size:14px;display:none;
+}
+.msg-box.error{border-color:var(--red);color:var(--red);background:#fdf0ee}
+.msg-box.success{border-color:var(--black);background:var(--g1)}
+.msg-box.show{display:block}
+.msg-box .suggest-btn{margin-top:12px}
+
+.confirm-card{
+  border:1.5px solid var(--black);padding:32px 28px;margin-top:24px;display:none;
+}
+.confirm-card.show{display:flex;gap:20px;align-items:center}
+.confirm-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:1px solid var(--g2)}
+.confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:16px;text-transform:uppercase;margin-bottom:4px}
+.confirm-card .cc-detail{font-size:13.5px;color:var(--g4)}
+
+/* ===== COMMENT CA MARCHE ===== */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:46px}
+@media (max-width:700px){.steps{grid-template-columns:1fr}}
+.step .snum{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--g3)}
+.step h3{font-size:16px;text-transform:uppercase;margin-top:8px;letter-spacing:.5px}
+.step p{font-size:13.5px;color:var(--g4);margin-top:8px}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid var(--g2);padding:50px 24px 30px;text-align:center}
+footer .logo{justify-content:center;display:flex;margin-bottom:14px}
+footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospace}
+.admin-trigger{
+  display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--g2);
+  margin-left:10px;cursor:default;transition:.3s;vertical-align:middle;
+}
+.admin-trigger:hover{background:var(--g3)}
+
+/* ===== ADMIN MODAL/PANEL ===== */
+.overlay{
+  position:fixed;inset:0;background:rgba(10,10,10,0.7);z-index:500;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;padding:20px;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.login-box{
+  background:var(--white);padding:44px 38px;max-width:340px;width:100%;text-align:center;border:1px solid var(--g2);
+}
+.login-box h3{font-size:16px;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
+.login-box input{width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px;margin-bottom:14px;text-align:center;letter-spacing:1px}
+.login-box .err{color:var(--red);font-size:12px;margin-bottom:10px;display:none}
+.login-box .err.show{display:block}
+
+.admin-panel{
+  position:fixed;inset:0;background:var(--white);z-index:600;overflow-y:auto;
+  transform:translateY(100%);transition:transform .35s ease;
+}
+.admin-panel.open{transform:translateY(0)}
+.admin-header{
+  position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--g2);padding:20px 28px;
+  display:flex;justify-content:space-between;align-items:center;z-index:5;
+}
+.admin-header h2{font-size:16px;text-transform:uppercase;letter-spacing:1px}
+.admin-body{max-width:1080px;margin:0 auto;padding:36px 28px 80px}
+
+.admin-filters{display:flex;gap:14px;margin-bottom:30px;flex-wrap:wrap;align-items:flex-end}
+.admin-filters .field{margin-bottom:0;flex:1;min-width:160px}
+
+.admin-section-title{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--g4);margin:36px 0 16px;font-weight:600}
+
+.appt-row{
+  display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--g2);
+}
+.appt-row.done{opacity:.4}
+.appt-row img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--g2);flex-shrink:0}
+.appt-row .ai-name{font-weight:600;font-size:14.5px}
+.appt-row .ai-meta{font-size:12px;color:var(--g4);font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.appt-row .ai-main{flex:1;min-width:0}
+.appt-row .ai-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.appt-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--black)}
+.del-btn{background:none;border:1px solid var(--g2);width:30px;height:30px;font-size:14px;color:var(--g4)}
+.del-btn:hover{border-color:var(--red);color:var(--red)}
+.empty-state{padding:40px 0;text-align:center;color:var(--g3);font-size:13.5px}
+
+.admin-add-box{border:1px solid var(--g2);padding:30px 26px;margin-top:14px}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="head">
+      <img class="imglogo" src="./Bloom Church-logo ok-03.png">
+    <div class="logo">RDV <span>avec mon</span> Coach</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <span class="eyebrow"> Coach Moise</span>
+  <h1>Réservez votre moment<br>avec coach Moise</h1>
+  <p>Inscrivez-vous en quelques secondes pour un entretien, une salutation ou tout autre besoin. Choisissez l'heure qui vous convient — le créneau s'ajuste automatiquement.</p>
+  <div class="hero-cta"><a href="#reserver" class="btn">Prendre rendez-vous</a></div>
+</section>
+
+<!-- ===== TYPES ===== -->
+<section id="types">
+  <span class="eyebrow">Les formats disponibles</span>
+  <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Trois façons de venir nous voir</h2>
+  <div class="types-grid">
+    <div class="type-info">
+      <div class="dur">20 <small>MIN</small></div>
+      <h3>Entretien</h3>
+      <p>Un temps d'échange approfondi avec votre coach.</p>
+    </div>
+    <div class="type-info">
+      <div class="dur">2 <small>MIN</small></div>
+      <h3>prière</h3>
+      <p>Un moment de prière en privé.</p>
+    </div>
+    <div class="type-info">
+      <div class="dur">3 <small>MIN</small></div>
+      <h3>Information</h3>
+      <p>Pour toute demande rapide ou information à faire passer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMMENT CA MARCHE ===== -->
+<section>
+  <span class="eyebrow">Comment ça marche ?</span>
+  <div class="steps">
+    <div class="step"><span class="snum mono">01</span><h3>Choisissez</h3><p>Votre coach, le type de rendez-vous et l'heure souhaitée.</p></div>
+    <div class="step"><span class="snum mono">02</span><h3>On ajuste</h3><p>Si le créneau est déjà pris, on vous propose l'heure disponible la plus proche.</p></div>
+    <div class="step"><span class="snum mono">03</span><h3>C'est confirmé</h3><p>Vous recevez votre créneau exact, du début à la fin.</p></div>
+  </div>
+</section>
+
+<!-- ===== RESERVATION ===== -->
+<section id="reserver">
+  <span class="eyebrow">Réservation</span>
+  <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Prenez votre rendez-vous</h2>
+
+  <div class="form-box">
+    <div class="field">
+      <label>Votre nom complet</label>
+      <input type="text" id="pubName" placeholder="ex: Jean Kouassi">
+    </div>
+
+    <div class="field">
+      <label>Votre photo</label>
+      <div class="photo-upload">
+        <div class="photo-preview" id="pubPhotoPreview"><span class="ph-ph">＋</span></div>
+        <input type="file" id="pubPhoto" accept="image/*">
+      </div>
+    </div>
+
+
+
+    <div class="field">
+        <label>Votre département</label>
+        <div class="choice-grid" id="coachChoice">
+          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
+          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
+          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
+          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
+          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
+          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
+          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
+          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
+          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
+          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
+          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
+          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
+          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
+        </div>
+      </div>
+    
+
+    <div class="field">
+      <label>Type de rendez-vous</label>
+      <div class="choice-grid types" id="typeChoice">
+        <div class="choice-card" data-type="entretien" data-dur="20"><div class="cname">Entretien</div><div class="cdur">20 MIN</div></div>
+        <div class="choice-card" data-type="prière" data-dur="2"><div class="cname">Prière</div><div class="cdur">2 MIN</div></div>
+        <div class="choice-card" data-type="information" data-dur="3"><div class="cname">Information</div><div class="cdur">3 MIN</div></div>
+      </div>
+    </div>
+
+  
+     
+    <div class="field">
+      <label>Les rendez vous sont prévus pour les Dimanche uniquement dans les intervalles suivants: 10h30-12h50 et 16h20-18h20 </label>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="pubDate">
+      </div>
+      <div class="field">
+        <label>Heure souhaitée</label>
+        <input type="time" id="pubTime" step="300">
+      </div>
+    </div>
+
+    <div class="ruler-wrap" id="rulerWrap" style="display:none">
+      <div class="ruler-label"><span>10H00</span><span id="rulerCoachLabel"></span><span>21H00</span></div>
+      <div class="ruler" id="ruler"></div>
+      <div class="ruler-legend">
+        <span><i class="sw sw-busy"></i>Créneau pris</span>
+        <span><i class="sw sw-margin"></i>Réservé aux protocoles (dimanche)</span>
+        <span><i class="sw sw-new"></i>Votre créneau</span>
+      </div>
+    </div>
+
+    <div style="margin-top:34px">
+      <button class="btn" id="submitBtn" style="width:100%;justify-content:center">Réserver mon créneau</button>
+    </div>
+
+    <div class="msg-box error" id="errorBox">
+      <div id="errorText"></div>
+      <button class="btn btn-outline btn-sm suggest-btn" id="suggestBtn" style="display:none">Utiliser ce créneau à la place</button>
+    </div>
+
+    <div class="confirm-card" id="confirmCard">
+      <img id="confirmPhoto" src="" alt="">
+      <div>
+        <div class="cc-title" id="confirmTitle"></div>
+        <div class="cc-detail" id="confirmDetail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="logo">RDV <span>avec mon</span> Coach</div>
+  <div class="fnote">© Rdv avec mon Coach<span class="admin-trigger" id="adminTrigger"></span></div>
+</footer>
+
+<!-- ===== ADMIN LOGIN MODAL ===== -->
+<div class="overlay" id="loginOverlay">
+  <div class="login-box">
+    <h3>Espace protocoles</h3>
+    <input type="password" id="adminCode" placeholder="Code d'accès" autocomplete="off">
+    <div class="err" id="loginErr">Code incorrect.</div>
+    <button class="btn" id="loginSubmit" style="width:100%;justify-content:center">Entrer</button>
+    <button class="btn btn-outline btn-sm" id="loginCancel" style="width:100%;justify-content:center;margin-top:10px">Annuler</button>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h2>Espace protocoles</h2>
+    <button class="btn btn-outline btn-sm" id="adminClose">Fermer</button>
+  </div>
+  <div class="admin-body">
+
+    <div class="admin-filters">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="adminFilterDate">
+      </div>
+      <div class="field">
+        <label>Coach</label>
+        <select id="adminFilterCoach" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+          <option value="">Tous les coachs</option>
+          <option value="Coach Melyou">Coach Melyou</option>
+          <option value="Coach Moise">Coach Moise</option>
+        </select>
+      </div>
+      <button class="btn btn-outline" id="adminClearFilter">Effacer filtre</button>
+    </div>
+
+    <div class="admin-section-title">Liste des rendez-vous</div>
+    <div id="adminList"></div>
+
+    <div class="admin-section-title">Ajouter un rendez-vous (jour-J)</div>
+    <div class="admin-add-box">
+      <div class="field">
+        <label>Nom complet</label>
+        <input type="text" id="adminName" placeholder="ex: Marie Diabaté">
+      </div>
+      <div class="field">
+        <label>Photo</label>
+        <div class="photo-upload">
+          <div class="photo-preview" id="adminPhotoPreview"><span class="ph-ph">＋</span></div>
+          <input type="file" id="adminPhoto" accept="image/*">
+        </div>
+      </div>
+      <div class="field">
+        <label>Votre département</label>
+        <div class="choice-grid" id="adminCoachChoice">
+          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
+          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
+          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
+          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
+          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
+          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
+          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
+          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
+          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
+          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
+          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
+          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
+          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Type de rendez-vous</label>
+        <div class="choice-grid types" id="adminTypeChoice">
+          <div class="choice-card" data-type="entretien" data-dur="45"><div class="cname">Entretien</div><div class="cdur">45 MIN</div></div>
+          <div class="choice-card" data-type="salutation" data-dur="5"><div class="cname">Salutation</div><div class="cdur">5 MIN</div></div>
+          <div class="choice-card" data-type="autre" data-dur="15"><div class="cname">Autre chose</div><div class="cdur">15 MIN</div></div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="adminDate"></div>
+        <div class="field"><label>Heure</label><input type="time" id="adminTime" step="300"></div>
+      </div>
+      <button class="btn" id="adminSubmit" style="width:100%;justify-content:center">Ajouter ce rendez-vous</button>
+      <div class="msg-box error" id="adminErrorBox" style="margin-top:18px">
+        <div id="adminErrorText"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const ADMIN_CODE = "Protocoles2026";
+const DURATIONS = { entretien: 20, prière: 2, information: 3 };
+const TYPE_LABELS = { entretien: "Entretien", prière: "Prière", information: "Information" };
+const OPENING = 10*60;      // 10h00
+const CLOSING = 21*60;     // 21h00
+const SUNDAY_MARGIN_START = 18*60; // 18h00
+const SUNDAY_MARGIN_END = 21*60;   // 21h00 (marge de 3h)
+const STORAGE_KEY = "rdv_coach_appointments";
+
+/* ================= STORAGE ================= */
+function loadAppointments(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
+}
+function saveAppointments(list){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+let appointments = loadAppointments();
+
+/* ================= TIME HELPERS ================= */
+function toMinutes(t){ const [h,m] = t.split(':').map(Number); return h*60+m; }
+function toFrenchTime(mins){
+  mins = Math.round(mins);
+  const h = Math.floor(mins/60), m = mins%60;
+  return h + 'h' + String(m).padStart(2,'0');
+}
+function isSunday(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  return d.getDay() === 0;
+}
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+/* ================= AVAILABILITY LOGIC ================= */
+function getBookingsFor(coach, date){
+  return appointments
+    .filter(a => a.coach === coach && a.date === date)
+    .sort((a,b) => a.start - b.start);
+}
+
+function overlaps(startA, endA, startB, endB){
+  return startA < endB && endA > startB;
+}
+
+// Returns {ok:true,start,end} or {ok:false, reason, suggestion}
+function checkSlot(coach, date, type, requestedStart, isAdmin){
+  const duration = DURATIONS[type];
+  const start = requestedStart;
+  const end = start + duration;
+
+  if(start < OPENING || end > CLOSING){
+    return {ok:false, reason:"Les rendez-vous se prennent entre 10h00 et 21h00."};
+  }
+
+  if(isSunday(date) && !isAdmin){
+    if(overlaps(start,end,SUNDAY_MARGIN_START,SUNDAY_MARGIN_END)){
+      const sug = findNextAvailable(coach,date,type,start,isAdmin);
+      return {ok:false, reason:"De 18h00 à 21h00 le dimanche, les créneaux sont réservés aux protocoles. Merci de choisir un horaire avant 18h00.", suggestion: sug};
+    }
+  }
+
+  const bookings = getBookingsFor(coach,date);
+  for(const b of bookings){
+    if(overlaps(start,end,b.start,b.end)){
+      const sug = findNextAvailable(coach,date,type,start,isAdmin);
+      return {ok:false, reason:"Ce créneau est déjà pris pour "+coach+" (occupé jusqu'à "+toFrenchTime(b.end)+").", suggestion: sug};
+    }
+  }
+
+  return {ok:true, start, end};
+}
+
+function findNextAvailable(coach,date,type,fromStart,isAdmin){
+  const duration = DURATIONS[type];
+  const bookings = getBookingsFor(coach,date);
+  let candidate = Math.max(fromStart, OPENING);
+  const effectiveClosing = (isSunday(date) && !isAdmin) ? SUNDAY_MARGIN_START : CLOSING;
+  let iterations = 0;
+
+  while(iterations < 300){
+    iterations++;
+    const candEnd = candidate + duration;
+
+    if(candEnd > effectiveClosing){
+      return null; // pas de créneau disponible
+    }
+
+    let conflict = null;
+    for(const b of bookings){
+      if(overlaps(candidate,candEnd,b.start,b.end)){ conflict = b; break; }
+    }
+    if(!conflict){
+      return candidate;
+    }
+    candidate = conflict.end;
+  }
+  return null;
+}
+
+/* ================= RULER RENDERING ================= */
+function renderRuler(containerId, coach, date, previewStart, previewDuration){
+  const ruler = document.getElementById(containerId);
+  ruler.innerHTML = '';
+  const totalStart = OPENING, totalEnd = CLOSING, span = totalEnd-totalStart;
+
+  function pct(mins){ return ((mins-totalStart)/span)*100; }
+
+  // hour ticks
+  for(let h=8; h<21; h+=2){
+    const tick = document.createElement('div');
+    tick.className='tick';
+    tick.style.left = pct(h*60)+'%';
+    ruler.appendChild(tick);
+  }
+
+  // sunday margin
+  if(date && isSunday(date)){
+    const m = document.createElement('div');
+    m.className='block margin';
+    m.style.left = pct(SUNDAY_MARGIN_START)+'%';
+    m.style.width = (pct(SUNDAY_MARGIN_END)-pct(SUNDAY_MARGIN_START))+'%';
+    ruler.appendChild(m);
+  }
+
+  // existing bookings
+  if(coach && date){
+    getBookingsFor(coach,date).forEach(b=>{
+      const el = document.createElement('div');
+      el.className='block';
+      el.style.left = pct(b.start)+'%';
+      el.style.width = Math.max(pct(b.end)-pct(b.start),0.6)+'%';
+      ruler.appendChild(el);
+    });
+  }
+
+  // preview of new appointment
+  if(previewStart !== null && previewDuration){
+    const el = document.createElement('div');
+    el.className='block preview';
+    el.style.left = pct(previewStart)+'%';
+    el.style.width = Math.max(pct(previewStart+previewDuration)-pct(previewStart),0.6)+'%';
+    ruler.appendChild(el);
+  }
+}
+
+/* ================= PHOTO UPLOAD HELPER ================= */
+function setupPhotoUpload(inputId, previewId, state){
+  document.getElementById(inputId).addEventListener('change', function(){
+    const file = this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      state.photo = e.target.result;
+      document.getElementById(previewId).innerHTML = '<img src="'+e.target.result+'">';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ================= CHOICE CARD HELPER ================= */
+function setupChoiceGroup(containerId, dataAttr, state, stateKey, onChange){
+  document.querySelectorAll('#'+containerId+' .choice-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      document.querySelectorAll('#'+containerId+' .choice-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      state[stateKey] = card.dataset[dataAttr];
+      if(onChange) onChange(card);
+    });
+  });
+}
+
+/* ================================================================
+   PUBLIC BOOKING FORM
+   ================================================================ */
+const pubState = { coach:null, type:null, duration:null, photo:null };
+
+setupPhotoUpload('pubPhoto','pubPhotoPreview',pubState);
+setupChoiceGroup('coachChoice','coach',pubState,'coach', updatePubRuler);
+setupChoiceGroup('typeChoice','type',pubState,'type', (card)=>{ pubState.duration = parseInt(card.dataset.dur); updatePubRuler(); });
+
+document.getElementById('pubDate').min = todayStr();
+document.getElementById('pubDate').value = todayStr();
+document.getElementById('pubDate').addEventListener('change', updatePubRuler);
+document.getElementById('pubTime').addEventListener('change', updatePubRuler);
+
+function updatePubRuler(){
+  const date = document.getElementById('pubDate').value;
+  const time = document.getElementById('pubTime').value;
+  if(pubState.coach && date){
+    document.getElementById('rulerWrap').style.display='block';
+    document.getElementById('rulerCoachLabel').textContent = pubState.coach;
+    const previewStart = time ? toMinutes(time) : null;
+    renderRuler('ruler', pubState.coach, date, previewStart, pubState.duration);
+  } else {
+    document.getElementById('rulerWrap').style.display='none';
+  }
+}
+
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('pubName').value.trim();
+  const date = document.getElementById('pubDate').value;
+  const time = document.getElementById('pubTime').value;
+  const errorBox = document.getElementById('errorBox');
+  const suggestBtn = document.getElementById('suggestBtn');
+  errorBox.classList.remove('show');
+  suggestBtn.style.display='none';
+  document.getElementById('confirmCard').classList.remove('show');
+
+  if(!name){ showPubError("Merci d'indiquer votre nom complet."); return; }
+  if(!pubState.coach){ showPubError("Merci d'indiquer votre département."); return; }
+  if(!pubState.type){ showPubError("Merci de choisir un type de rendez-vous."); return; }
+  if(!date || !time){ showPubError("Merci de choisir une date et une heure."); return; }
+
+  const start = toMinutes(time);
+  const result = checkSlot(pubState.coach, date, pubState.type, start, false);
+
+  if(!result.ok){
+    showPubError(result.reason);
+    if(result.suggestion !== undefined && result.suggestion !== null){
+      suggestBtn.style.display='inline-flex';
+      suggestBtn.textContent = "Utiliser "+toFrenchTime(result.suggestion)+" à la place";
+      suggestBtn.onclick = ()=>{
+        document.getElementById('pubTime').value = String(Math.floor(result.suggestion/60)).padStart(2,'0')+':'+String(result.suggestion%60).padStart(2,'0');
+        updatePubRuler();
+        errorBox.classList.remove('show');
+      };
+    } else if(result.suggestion === null){
+      suggestBtn.style.display='none';
+    }
+    updatePubRuler();
+    return;
+  }
+
+  const appt = {
+    id: 'a_'+Date.now(),
+    name, photo: pubState.photo || null,
+    coach: pubState.coach, type: pubState.type,
+    date, start: result.start, end: result.end,
+    done:false, createdBy:'public'
+  };
+  appointments.push(appt);
+  saveAppointments(appointments);
+
+  document.getElementById('confirmPhoto').src = appt.photo || '';
+  document.getElementById('confirmPhoto').style.display = appt.photo ? 'block':'none';
+  document.getElementById('confirmTitle').textContent = "Rendez-vous confirmé";
+  document.getElementById('confirmDetail').textContent =
+    name+" de "+pubState.coach+" pour "+TYPE_LABELS[pubState.type]+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
+  document.getElementById('confirmCard').classList.add('show');
+
+  updatePubRuler();
+});
+
+function showPubError(text){
+  document.getElementById('errorText').textContent = text;
+  document.getElementById('errorBox').classList.add('show');
+}
+
+function formatDateFr(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  const days=['Dimanche'];
+  const months=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+  return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+}
+
+/* ================================================================
+   ADMIN — LOGIN
+   ================================================================ */
+document.getElementById('adminTrigger').addEventListener('click', ()=>{
+  document.getElementById('loginOverlay').classList.add('open');
+  document.getElementById('adminCode').value='';
+  document.getElementById('loginErr').classList.remove('show');
+});
+document.getElementById('loginCancel').addEventListener('click', ()=>{
+  document.getElementById('loginOverlay').classList.remove('open');
+});
+document.getElementById('loginOverlay').addEventListener('click', (e)=>{
+  if(e.target.id==='loginOverlay') document.getElementById('loginOverlay').classList.remove('open');
+});
+document.getElementById('loginSubmit').addEventListener('click', tryAdminLogin);
+document.getElementById('adminCode').addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryAdminLogin(); });
+
+function tryAdminLogin(){
+  const code = document.getElementById('adminCode').value;
+  if(code === ADMIN_CODE){
+    document.getElementById('loginOverlay').classList.remove('open');
+    document.getElementById('adminPanel').classList.add('open');
+    document.getElementById('adminDate').value = todayStr();
+    renderAdminList();
+  } else {
+    document.getElementById('loginErr').classList.add('show');
+  }
+}
+document.getElementById('adminClose').addEventListener('click', ()=>{
+  document.getElementById('adminPanel').classList.remove('open');
+});
+
+/* ================================================================
+   ADMIN — LIST / FILTER / CHECK / DELETE
+   ================================================================ */
+document.getElementById('adminFilterDate').addEventListener('change', renderAdminList);
+document.getElementById('adminFilterCoach').addEventListener('change', renderAdminList);
+document.getElementById('adminClearFilter').addEventListener('click', ()=>{
+  document.getElementById('adminFilterDate').value='';
+  document.getElementById('adminFilterCoach').value='';
+  renderAdminList();
+});
+
+function renderAdminList(){
+  appointments = loadAppointments();
+  const fDate = document.getElementById('adminFilterDate').value;
+  const fCoach = document.getElementById('adminFilterCoach').value;
+
+  let list = [...appointments];
+  if(fDate) list = list.filter(a=>a.date===fDate);
+  if(fCoach) list = list.filter(a=>a.coach===fCoach);
+  list.sort((a,b)=> a.date===b.date ? a.start-b.start : a.date.localeCompare(b.date));
+
+  const container = document.getElementById('adminList');
+  if(list.length===0){
+    container.innerHTML = '<div class="empty-state">Aucun rendez-vous pour ce filtre.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map(a=>`
+    <div class="appt-row ${a.done?'done':''}">
+      ${a.photo ? '<img src="'+a.photo+'">' : '<div style="width:42px;height:42px;border-radius:50%;background:var(--g1);border:1px solid var(--g2)"></div>'}
+      <div class="ai-main">
+        <div class="ai-name">${escapeHtml(a.name)}</div>
+        <div class="ai-meta">${formatDateFr(a.date)} · ${toFrenchTime(a.start)}–${toFrenchTime(a.end)} · ${TYPE_LABELS[a.type]} · ${a.coach}</div>
+      </div>
+      <div class="ai-actions">
+        <input type="checkbox" ${a.done?'checked':''} onchange="toggleDone('${a.id}')" title="Passé">
+        <button class="del-btn" onclick="deleteAppt('${a.id}')">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function toggleDone(id){
+  appointments = loadAppointments();
+  const a = appointments.find(x=>x.id===id);
+  if(a){ a.done = !a.done; saveAppointments(appointments); }
+  renderAdminList();
+}
+function deleteAppt(id){
+  appointments = loadAppointments();
+  appointments = appointments.filter(x=>x.id!==id);
+  saveAppointments(appointments);
+  renderAdminList();
+}
+
+/* ================================================================
+   ADMIN — ADD APPOINTMENT (jour-J, bypasses dimanche margin)
+   ================================================================ */
+const adminState = { coach:null, type:null, duration:null, photo:null };
+setupPhotoUpload('adminPhoto','adminPhotoPreview',adminState);
+setupChoiceGroup('adminCoachChoice','coach',adminState,'coach');
+setupChoiceGroup('adminTypeChoice','type',adminState,'type', (card)=>{ adminState.duration = parseInt(card.dataset.dur); });
+
+document.getElementById('adminSubmit').addEventListener('click', ()=>{
+  const name = document.getElementById('adminName').value.trim();
+  const date = document.getElementById('adminDate').value;
+  const time = document.getElementById('adminTime').value;
+  const errBox = document.getElementById('adminErrorBox');
+  errBox.classList.remove('show');
+
+  if(!name || !adminState.coach || !adminState.type || !date || !time){
+    document.getElementById('adminErrorText').textContent = "Merci de remplir tous les champs.";
+    errBox.classList.add('show');
+    return;
+  }
+
+  appointments = loadAppointments();
+  const start = toMinutes(time);
+  const result = checkSlot(adminState.coach, date, adminState.type, start, true);
+
+  if(!result.ok){
+    document.getElementById('adminErrorText').textContent = result.reason;
+    errBox.classList.add('show');
+    return;
+  }
+
+  appointments.push({
+    id:'a_'+Date.now(), name, photo:adminState.photo||null,
+    coach:adminState.coach, type:adminState.type,
+    date, start:result.start, end:result.end, done:false, createdBy:'admin'
+  });
+  saveAppointments(appointments);
+
+  document.getElementById('adminName').value='';
+  document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+  adminState.photo=null; adminState.coach=null; adminState.type=null; adminState.duration=null;
+  document.querySelectorAll('#adminCoachChoice .choice-card, #adminTypeChoice .choice-card').forEach(c=>c.classList.remove('selected'));
+
+  renderAdminList();
+});
+
+</script>
+</body>
+</html>

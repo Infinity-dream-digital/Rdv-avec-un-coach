@@ -132,7 +132,7 @@ nav a:hover{border-color:var(--black)}
 }
 .photo-preview img{width:100%;height:100%;object-fit:cover}
 .photo-preview .ph-ph{font-size:22px;color:var(--g3)}
-.photo-upload input[type=file]{font-size:13px}
+.photo-upload input[type=file]{font-size:13px;max-width:100%}
 
 .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .choice-grid.types{grid-template-columns:repeat(2,1fr)}
@@ -156,7 +156,7 @@ nav a:hover{border-color:var(--black)}
 .confirm-card{
   border:1.5px solid var(--black);padding:32px 28px;margin-top:24px;display:none;
 }
-.confirm-card.show{display:flex;gap:20px;align-items:center}
+.confirm-card.show{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 .confirm-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:1px solid var(--g2)}
 .confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:16px;text-transform:uppercase;margin-bottom:4px}
 .confirm-card .cc-detail{font-size:13.5px;color:var(--g4)}
@@ -187,6 +187,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 .login-box{
   background:var(--white);padding:44px 38px;max-width:340px;width:100%;text-align:center;border:1px solid var(--g2);
 }
+@media (max-width:420px){.login-box{padding:32px 22px}}
 .login-box h3{font-size:16px;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
 .login-box input{width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px;margin-bottom:14px;text-align:center;letter-spacing:1px}
 .login-box .err{color:var(--red);font-size:12px;margin-bottom:10px;display:none}
@@ -199,10 +200,12 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 .admin-panel.open{transform:translateY(0)}
 .admin-header{
   position:sticky;top:0;background:var(--white);border-bottom:1px solid var(--g2);padding:20px 28px;
-  display:flex;justify-content:space-between;align-items:center;z-index:5;
+  display:flex;justify-content:space-between;align-items:center;z-index:5;flex-wrap:wrap;gap:10px;
 }
+@media (max-width:600px){.admin-header{padding:16px 20px}}
 .admin-header h2{font-size:16px;text-transform:uppercase;letter-spacing:1px}
 .admin-body{max-width:1080px;margin:0 auto;padding:36px 28px 80px}
+@media (max-width:600px){.admin-body{padding:24px 20px 60px}}
 
 .admin-filters{display:flex;gap:14px;margin-bottom:30px;flex-wrap:wrap;align-items:flex-end}
 .admin-filters .field{margin-bottom:0;flex:1;min-width:160px}
@@ -210,13 +213,14 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 .admin-section-title{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--g4);margin:36px 0 16px;font-weight:600}
 
 .appt-row{
-  display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--g2);
+  display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--g2);flex-wrap:wrap;
 }
 .appt-row.done{opacity:.4}
-.appt-row img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--g2);flex-shrink:0}
+.appt-row img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--g2);flex-shrink:0;cursor:zoom-in;transition:.15s}
+.appt-row img:hover{border-color:var(--black)}
 .appt-row .ai-name{font-weight:600;font-size:14.5px}
 .appt-row .ai-meta{font-size:12px;color:var(--g4);font-family:'IBM Plex Mono',monospace;margin-top:2px}
-.appt-row .ai-main{flex:1;min-width:0}
+.appt-row .ai-main{flex:1;min-width:180px}
 .appt-row .ai-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .appt-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--black)}
 .del-btn{background:none;border:1px solid var(--g2);width:30px;height:30px;font-size:14px;color:var(--g4)}
@@ -224,6 +228,42 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 .empty-state{padding:40px 0;text-align:center;color:var(--g3);font-size:13.5px}
 
 .admin-add-box{border:1px solid var(--g2);padding:30px 26px;margin-top:14px}
+@media (max-width:600px){.admin-add-box{padding:22px 18px}}
+
+/* ===== PHOTO ZOOM MODAL ===== */
+.photo-overlay{
+  position:fixed;inset:0;background:rgba(10,10,10,0.88);z-index:700;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;padding:24px;flex-direction:column;gap:16px;cursor:zoom-out;
+}
+.photo-overlay.open{opacity:1;pointer-events:all}
+.photo-overlay img{
+  max-width:min(420px,90vw);max-height:70vh;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;
+  border:3px solid var(--white);
+}
+.photo-overlay .po-name{color:var(--white);font-family:'Unbounded',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:.5px;text-align:center}
+.photo-overlay .po-close{
+  position:absolute;top:20px;right:20px;background:none;border:1px solid rgba(255,255,255,0.4);color:var(--white);
+  width:36px;height:36px;font-size:16px;border-radius:50%;
+}
+
+/* ===== SYNC BADGE ===== */
+.sync-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.5px;color:var(--g4);
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+}
+.sync-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--g3)}
+.sync-badge.ok .dot{background:#2e7d32}
+.sync-badge.err .dot{background:var(--red)}
+
+/* ===== EXTRA RESPONSIVE FIXES (mobile) ===== */
+@media (max-width:480px){
+  .photo-upload{flex-direction:column;align-items:flex-start}
+  .photo-preview{width:110px;height:110px}
+  .choice-grid{grid-template-columns:1fr}
+  .form-box{padding:26px 18px}
+  .header-inner{padding:16px 18px}
+  .logo{font-size:14px}
+}
 
 </style>
 </head>
@@ -358,6 +398,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
     <div style="margin-top:34px">
       <button class="btn" id="submitBtn" style="width:100%;justify-content:center">Réserver mon créneau</button>
+      <div class="sync-badge" id="syncBadge"><span class="dot"></span><span id="syncBadgeText">Connexion au serveur...</span></div>
     </div>
 
     <div class="msg-box error" id="errorBox">
@@ -471,6 +512,13 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   </div>
 </div>
 
+<!-- ===== PHOTO ZOOM MODAL ===== -->
+<div class="photo-overlay" id="photoOverlay">
+  <button class="po-close" id="photoOverlayClose">✕</button>
+  <img id="photoOverlayImg" src="" alt="">
+  <div class="po-name" id="photoOverlayName"></div>
+</div>
+
 <script>
 /* ================= CONFIG ================= */
 const ADMIN_CODE = "Protocoles2026";
@@ -480,16 +528,9 @@ const OPENING = 10*60;      // 10h00
 const CLOSING = 21*60;     // 21h00
 const SUNDAY_MARGIN_START = 18*60; // 18h00
 const SUNDAY_MARGIN_END = 21*60;   // 21h00 (marge de 3h)
-const STORAGE_KEY = "rdv_coach_appointments";
 
-/* ================= STORAGE ================= */
-function loadAppointments(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
-}
-function saveAppointments(list){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
-let appointments = loadAppointments();
+/* ================= APPOINTMENTS STATE (synced live from Firestore) ================= */
+let appointments = [];
 
 /* ================= TIME HELPERS ================= */
 function toMinutes(t){ const [h,m] = t.split(':').map(Number); return h*60+m; }
@@ -645,6 +686,22 @@ function setupChoiceGroup(containerId, dataAttr, state, stateKey, onChange){
   });
 }
 
+/* ================= PHOTO ZOOM MODAL ================= */
+function openPhotoModal(url, name){
+  if(!url) return;
+  document.getElementById('photoOverlayImg').src = url;
+  document.getElementById('photoOverlayName').textContent = name || '';
+  document.getElementById('photoOverlay').classList.add('open');
+}
+function closePhotoModal(){
+  document.getElementById('photoOverlay').classList.remove('open');
+}
+document.getElementById('photoOverlayClose').addEventListener('click', closePhotoModal);
+document.getElementById('photoOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'photoOverlay') closePhotoModal();
+});
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhotoModal(); });
+
 /* ================================================================
    PUBLIC BOOKING FORM
    ================================================================ */
@@ -672,12 +729,13 @@ function updatePubRuler(){
   }
 }
 
-document.getElementById('submitBtn').addEventListener('click', ()=>{
+document.getElementById('submitBtn').addEventListener('click', async ()=>{
   const name = document.getElementById('pubName').value.trim();
   const date = document.getElementById('pubDate').value;
   const time = document.getElementById('pubTime').value;
   const errorBox = document.getElementById('errorBox');
   const suggestBtn = document.getElementById('suggestBtn');
+  const submitBtn = document.getElementById('submitBtn');
   errorBox.classList.remove('show');
   suggestBtn.style.display='none';
   document.getElementById('confirmCard').classList.remove('show');
@@ -707,24 +765,39 @@ document.getElementById('submitBtn').addEventListener('click', ()=>{
     return;
   }
 
-  const appt = {
-    id: 'a_'+Date.now(),
+  const apptData = {
     name, photo: pubState.photo || null,
     coach: pubState.coach, type: pubState.type,
     date, start: result.start, end: result.end,
-    done:false, createdBy:'public'
+    done:false, createdBy:'public', createdAt: Date.now()
   };
-  appointments.push(appt);
-  saveAppointments(appointments);
 
-  document.getElementById('confirmPhoto').src = appt.photo || '';
-  document.getElementById('confirmPhoto').style.display = appt.photo ? 'block':'none';
-  document.getElementById('confirmTitle').textContent = "Rendez-vous confirmé";
-  document.getElementById('confirmDetail').textContent =
-    name+" de "+pubState.coach+" pour "+TYPE_LABELS[pubState.type]+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
-  document.getElementById('confirmCard').classList.add('show');
+  submitBtn.disabled = true;
+  const originalLabel = submitBtn.textContent;
+  submitBtn.textContent = 'Enregistrement...';
 
-  updatePubRuler();
+  try{
+    await window.saveAppointmentToFirestore(apptData);
+
+    document.getElementById('confirmPhoto').src = apptData.photo || '';
+    document.getElementById('confirmPhoto').style.display = apptData.photo ? 'block':'none';
+    document.getElementById('confirmTitle').textContent = "Rendez-vous confirmé";
+    document.getElementById('confirmDetail').textContent =
+      name+" de "+pubState.coach+" pour "+TYPE_LABELS[pubState.type]+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
+    document.getElementById('confirmCard').classList.add('show');
+
+    document.getElementById('pubName').value = '';
+    pubState.photo = null;
+    document.getElementById('pubPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+
+    updatePubRuler();
+  }catch(err){
+    console.error('Erreur Firestore:', err);
+    showPubError("Impossible d'enregistrer le rendez-vous (problème de connexion). Merci de réessayer.");
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
 });
 
 function showPubError(text){
@@ -783,7 +856,6 @@ document.getElementById('adminClearFilter').addEventListener('click', ()=>{
 });
 
 function renderAdminList(){
-  appointments = loadAppointments();
   const fDate = document.getElementById('adminFilterDate').value;
   const fCoach = document.getElementById('adminFilterCoach').value;
 
@@ -800,34 +872,57 @@ function renderAdminList(){
 
   container.innerHTML = list.map(a=>`
     <div class="appt-row ${a.done?'done':''}">
-      ${a.photo ? '<img src="'+a.photo+'">' : '<div style="width:42px;height:42px;border-radius:50%;background:var(--g1);border:1px solid var(--g2)"></div>'}
+      ${a.photo ? '<img src="'+a.photo+'" data-appt-id="'+a.id+'" title="Cliquer pour agrandir">' : '<div style="width:42px;height:42px;border-radius:50%;background:var(--g1);border:1px solid var(--g2)"></div>'}
       <div class="ai-main">
         <div class="ai-name">${escapeHtml(a.name)}</div>
         <div class="ai-meta">${formatDateFr(a.date)} · ${toFrenchTime(a.start)}–${toFrenchTime(a.end)} · ${TYPE_LABELS[a.type]} · ${a.coach}</div>
       </div>
       <div class="ai-actions">
-        <input type="checkbox" ${a.done?'checked':''} onchange="toggleDone('${a.id}')" title="Passé">
-        <button class="del-btn" onclick="deleteAppt('${a.id}')">✕</button>
+        <input type="checkbox" ${a.done?'checked':''} data-toggle-id="${a.id}" title="Passé">
+        <button class="del-btn" data-delete-id="${a.id}">✕</button>
       </div>
     </div>
   `).join('');
 }
 
+// Délégation d'événement : zoom photo, cocher "passé", supprimer.
+// Évite d'injecter noms/photos directement dans des attributs onclick (plus robuste avec accents, apostrophes, etc.)
+document.getElementById('adminList').addEventListener('click', (e)=>{
+  const img = e.target.closest('img[data-appt-id]');
+  if(img){
+    const a = appointments.find(x=>x.id === img.dataset.apptId);
+    if(a) openPhotoModal(a.photo, a.name);
+    return;
+  }
+  const delBtn = e.target.closest('[data-delete-id]');
+  if(delBtn){ deleteAppt(delBtn.dataset.deleteId); }
+});
+document.getElementById('adminList').addEventListener('change', (e)=>{
+  const chk = e.target.closest('[data-toggle-id]');
+  if(chk){ toggleDone(chk.dataset.toggleId); }
+});
+
 function escapeHtml(s){
   const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
 }
 
-function toggleDone(id){
-  appointments = loadAppointments();
+async function toggleDone(id){
   const a = appointments.find(x=>x.id===id);
-  if(a){ a.done = !a.done; saveAppointments(appointments); }
-  renderAdminList();
+  if(!a) return;
+  try{
+    await window.updateAppointmentInFirestore(id, { done: !a.done });
+  }catch(err){
+    console.error('Erreur Firestore (toggleDone):', err);
+    alert("Impossible de mettre à jour ce rendez-vous (problème de connexion).");
+  }
 }
-function deleteAppt(id){
-  appointments = loadAppointments();
-  appointments = appointments.filter(x=>x.id!==id);
-  saveAppointments(appointments);
-  renderAdminList();
+async function deleteAppt(id){
+  try{
+    await window.deleteAppointmentFromFirestore(id);
+  }catch(err){
+    console.error('Erreur Firestore (delete):', err);
+    alert("Impossible de supprimer ce rendez-vous (problème de connexion).");
+  }
 }
 
 /* ================================================================
@@ -838,11 +933,12 @@ setupPhotoUpload('adminPhoto','adminPhotoPreview',adminState);
 setupChoiceGroup('adminCoachChoice','coach',adminState,'coach');
 setupChoiceGroup('adminTypeChoice','type',adminState,'type', (card)=>{ adminState.duration = parseInt(card.dataset.dur); });
 
-document.getElementById('adminSubmit').addEventListener('click', ()=>{
+document.getElementById('adminSubmit').addEventListener('click', async ()=>{
   const name = document.getElementById('adminName').value.trim();
   const date = document.getElementById('adminDate').value;
   const time = document.getElementById('adminTime').value;
   const errBox = document.getElementById('adminErrorBox');
+  const adminSubmitBtn = document.getElementById('adminSubmit');
   errBox.classList.remove('show');
 
   if(!name || !adminState.coach || !adminState.type || !date || !time){
@@ -851,7 +947,6 @@ document.getElementById('adminSubmit').addEventListener('click', ()=>{
     return;
   }
 
-  appointments = loadAppointments();
   const start = toMinutes(time);
   const result = checkSlot(adminState.coach, date, adminState.type, start, true);
 
@@ -861,21 +956,129 @@ document.getElementById('adminSubmit').addEventListener('click', ()=>{
     return;
   }
 
-  appointments.push({
-    id:'a_'+Date.now(), name, photo:adminState.photo||null,
+  const apptData = {
+    name, photo:adminState.photo||null,
     coach:adminState.coach, type:adminState.type,
-    date, start:result.start, end:result.end, done:false, createdBy:'admin'
-  });
-  saveAppointments(appointments);
+    date, start:result.start, end:result.end, done:false, createdBy:'admin', createdAt: Date.now()
+  };
 
-  document.getElementById('adminName').value='';
-  document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
-  adminState.photo=null; adminState.coach=null; adminState.type=null; adminState.duration=null;
-  document.querySelectorAll('#adminCoachChoice .choice-card, #adminTypeChoice .choice-card').forEach(c=>c.classList.remove('selected'));
+  adminSubmitBtn.disabled = true;
+  const originalLabel = adminSubmitBtn.textContent;
+  adminSubmitBtn.textContent = 'Enregistrement...';
 
-  renderAdminList();
+  try{
+    await window.saveAppointmentToFirestore(apptData);
+
+    document.getElementById('adminName').value='';
+    document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+    adminState.photo=null; adminState.coach=null; adminState.type=null; adminState.duration=null;
+    document.querySelectorAll('#adminCoachChoice .choice-card, #adminTypeChoice .choice-card').forEach(c=>c.classList.remove('selected'));
+  }catch(err){
+    console.error('Erreur Firestore (admin add):', err);
+    document.getElementById('adminErrorText').textContent = "Impossible d'enregistrer (problème de connexion). Merci de réessayer.";
+    errBox.classList.add('show');
+  }finally{
+    adminSubmitBtn.disabled = false;
+    adminSubmitBtn.textContent = originalLabel;
+  }
 });
 
+/* ================================================================
+   FIRESTORE LIVE SYNC
+   Démarré depuis le module Firebase une fois `window.db` prêt.
+   Toutes les inscriptions (peu importe l'appareil) sont stockées
+   dans la collection "appointments" et synchronisées en temps réel
+   ici, dans le tableau `appointments`.
+   ================================================================ */
+function setSyncBadge(state, text){
+  const badge = document.getElementById('syncBadge');
+  const label = document.getElementById('syncBadgeText');
+  if(!badge) return;
+  badge.classList.remove('ok','err');
+  if(state) badge.classList.add(state);
+  label.textContent = text;
+}
+
+window.startAppointmentsSync = function(){
+  const { db, collection, onSnapshot } = window;
+  const apptsRef = collection(db, 'appointments');
+  onSnapshot(apptsRef, (snapshot)=>{
+    appointments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setSyncBadge('ok', 'Connecté — synchronisation en temps réel');
+    updatePubRuler();
+    if(document.getElementById('adminPanel').classList.contains('open')){
+      renderAdminList();
+    }
+  }, (error)=>{
+    console.error('Erreur de synchronisation Firestore:', error);
+    setSyncBadge('err', 'Connexion au serveur impossible — vérifiez votre internet');
+  });
+};
+
+window.saveAppointmentToFirestore = async function(apptData){
+  const { db, collection, addDoc } = window;
+  return addDoc(collection(db,'appointments'), apptData);
+};
+
+window.updateAppointmentInFirestore = async function(id, changes){
+  const { db, doc, updateDoc } = window;
+  return updateDoc(doc(db,'appointments',id), changes);
+};
+
+window.deleteAppointmentFromFirestore = async function(id){
+  const { db, doc, deleteDoc } = window;
+  return deleteDoc(doc(db,'appointments',id));
+};
+
 </script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc,
+updateDoc,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+ apiKey: "AIzaSyBxFQ6Qgwv07LVpFjOFCzv4YeG3HrhAVwQ",
+  authDomain: "puff-e16f7.firebaseapp.com",
+  projectId: "puff-e16f7",
+  storageBucket: "puff-e16f7.firebasestorage.app",
+  messagingSenderId: "552508218564",
+  appId: "1:552508218564:web:cc98c3e81bb575a41afd91"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+window.db=db;
+window.collection=collection;
+window.addDoc=addDoc;
+window.getDocs=getDocs;
+window.deleteDoc=deleteDoc;
+window.doc=doc;
+window.updateDoc=updateDoc;
+window.onSnapshot=onSnapshot;
+
+// Démarre la synchronisation en temps réel dès que Firebase est prêt
+if(window.startAppointmentsSync){
+  window.startAppointmentsSync();
+}
+
+</script>
+
+
+
 </body>
 </html>

@@ -614,6 +614,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     const errorText = document.getElementById('errorText');
     const confirmCard = document.getElementById('confirmCard');
     const formContent = document.getElementById('bookingFormContent');
+    const submitBtn = document.getElementById('submitBtn');
 
     errorBox.classList.remove('show');
     const windowStatus = checkWindowAvailability();
@@ -648,6 +649,9 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     }
 
     try {
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Enregistrement...";
+
       await addDoc(appointmentsRef, {
         name: name,
         photo: pubState.photo || null,
@@ -658,8 +662,8 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         createdAt: new Date().toISOString()
       });
 
-      // Masque le formulaire et affiche la confirmation
-      formContent.style.display = 'none';
+      // Masquage garanti du formulaire et affichage du composant de confirmation
+      formContent.setAttribute('style', 'display: none !important;');
       document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
       document.getElementById('confirmDetail').innerHTML = `
         <strong>Nom :</strong> ${name}<br>
@@ -668,7 +672,10 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         <strong>Horaire :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
       `;
       confirmCard.classList.add('show');
+      confirmCard.scrollIntoView({ behavior: 'smooth' });
     } catch(e) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Réserver mon créneau";
       errorText.innerText = "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer.";
       errorBox.classList.add('show');
     }

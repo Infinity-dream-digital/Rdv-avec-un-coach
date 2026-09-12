@@ -124,12 +124,13 @@ nav a:hover{border-color:var(--black)}
 .msg-box.show{display:block}
 
 .confirm-card{
-  border:1.5px solid var(--black);padding:32px 28px;margin-top:24px;display:none;
+  border:1.5px solid var(--black);padding:32px 28px;margin-top:10px;display:none;
+  background:var(--g1);border-radius:8px;
 }
 .confirm-card.show{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.confirm-card img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:1px solid var(--g2)}
-.confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:16px;text-transform:uppercase;margin-bottom:4px}
-.confirm-card .cc-detail{font-size:13.5px;color:var(--g4)}
+.confirm-card img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:1px solid var(--g2)}
+.confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:16px;text-transform:uppercase;margin-bottom:8px;color:var(--black)}
+.confirm-card .cc-detail{font-size:14px;color:var(--black);line-height:1.7}
 
 /* ===== COMMENT CA MARCHE ===== */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:46px}
@@ -275,7 +276,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Prenez votre rendez-vous</h2>
 
   <div class="form-box">
-    <div id="bookingClosedNotice" class="msg-box error show" style="display:none; margin-top:0; margin-bottom:20px;"></div>
+    <div id="bookingClosedNotice" class="msg-box error" style="display:none; margin-top:0; margin-bottom:20px;"></div>
 
     <div id="bookingFormContent">
       <div class="field">
@@ -294,6 +295,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       <div class="field">
         <label>Votre département</label>
         <div class="choice-grid" id="coachChoice">
+          <div class="choice-card" data-dept="Aucun"><div class="cname">Aucun</div></div>
           <div class="choice-card" data-dept="ADN"><div class="cname">ADN</div></div>
           <div class="choice-card" data-dept="Bloom 121"><div class="cname">Bloom 121</div></div>
           <div class="choice-card" data-dept="Bloom Art"><div class="cname">Bloom Art</div></div>
@@ -338,13 +340,15 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       </div>
     </div>
 
+    <!-- CARTE DE CONFIRMATION DE RENDEZ-VOUS -->
     <div class="confirm-card" id="confirmCard">
-      <img id="confirmPhoto" src="" alt="">
+      <img id="confirmPhoto" src="" alt="Photo du client">
       <div>
-        <div class="cc-title" id="confirmTitle"></div>
+        <div class="cc-title" id="confirmTitle">Rendez-vous Confirmé !</div>
         <div class="cc-detail" id="confirmDetail"></div>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -400,6 +404,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       <div class="field">
         <label>Département</label>
         <select id="adminDept" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+          <option value="Aucun">Aucun</option>
           <option value="ADN">ADN</option>
           <option value="Bloom 121">Bloom 121</option>
           <option value="Bloom Art">Bloom Art</option>
@@ -537,7 +542,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
     if (!windowStatus.isOpen) {
       closedNotice.innerText = windowStatus.reason;
-      closedNotice.style.display = 'block';
+      closedNotice.classList.add('show');
       formContent.style.opacity = '0.5';
       formContent.style.pointerEvents = 'none';
     }
@@ -608,6 +613,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     const errorBox = document.getElementById('errorBox');
     const errorText = document.getElementById('errorText');
     const confirmCard = document.getElementById('confirmCard');
+    const formContent = document.getElementById('bookingFormContent');
 
     errorBox.classList.remove('show');
     const windowStatus = checkWindowAvailability();
@@ -652,9 +658,9 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         createdAt: new Date().toISOString()
       });
 
-      document.getElementById('bookingFormContent').style.display = 'none';
+      // Masque le formulaire et affiche la confirmation
+      formContent.style.display = 'none';
       document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
-      document.getElementById('confirmTitle').innerText = "Rendez-vous Confirmé !";
       document.getElementById('confirmDetail').innerHTML = `
         <strong>Nom :</strong> ${name}<br>
         <strong>Département :</strong> ${pubState.dept}<br>
@@ -663,7 +669,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       `;
       confirmCard.classList.add('show');
     } catch(e) {
-      errorText.innerText = "Une erreur s'est produite. Veuillez réessayer.";
+      errorText.innerText = "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer.";
       errorBox.classList.add('show');
     }
   });
@@ -723,7 +729,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         </div>
       `;
 
-      // ZOOM PHOTO AU CLIC DANS L'ADMIN
+      // Zoom photo au clic dans l'admin
       row.querySelector('img').addEventListener('click', () => {
         openPhotoModal(photoSrc, `${a.name} (${a.dept})`);
       });

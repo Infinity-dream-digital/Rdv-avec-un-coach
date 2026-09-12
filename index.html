@@ -8,18 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 
-/* ============================================================
-   NOTE IMPORTANTE SUR LE STOCKAGE
-   Ce site enregistre les rendez-vous dans la mémoire du navigateur
-   (localStorage) de l'appareil utilisé. Si tu veux que les
-   inscriptions faites par les visiteurs sur LEUR téléphone soient
-   visibles dans l'espace admin sur TON téléphone, il faudra à terme
-   brancher une vraie base de données partagée. Pour l'instant,
-   ce site fonctionne parfaitement si tu l'utilises sur un même
-   appareil (ex: une tablette à l'entrée de l'église pour les
-   inscriptions, consultée aussi pour l'admin).
-   ============================================================ */
-
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --black:#0a0a0a;
@@ -85,41 +73,23 @@ nav a:hover{border-color:var(--black)}
 .btn[disabled]:hover{background:var(--black);color:var(--white)}
 
 /* ===== TYPES SECTION ===== */
-.types-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
-@media (max-width:700px){.types-grid{grid-template-columns:1fr}}
-.type-info{border:1px solid var(--g2);padding:30px 24px}
+.types-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:40px;max-width:500px;margin-left:auto;margin-right:auto}
+.type-info{border:1px solid var(--g2);padding:30px 24px;text-align:center}
 .type-info .dur{font-family:'Unbounded',sans-serif;font-size:34px;font-weight:800}
 .type-info .dur small{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:400;color:var(--g4)}
 .type-info h3{font-size:15px;text-transform:uppercase;letter-spacing:1px;margin-top:10px}
 .type-info p{font-size:13.5px;color:var(--g4);margin-top:8px}
-
-/* ===== RULER (signature element) ===== */
-.ruler-wrap{margin-top:22px}
-.ruler-label{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--g4);margin-bottom:6px;letter-spacing:.5px}
-.ruler{
-  position:relative;height:34px;background:var(--g1);border:1px solid var(--g2);overflow:hidden;
-}
-.ruler .block{position:absolute;top:0;height:100%;background:var(--black)}
-.ruler .block.margin{background:repeating-linear-gradient(45deg, var(--g3) 0 4px, var(--g2) 4px 8px)}
-.ruler .block.preview{background:var(--red);opacity:.75}
-.ruler .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--g2)}
-.ruler-legend{display:flex;gap:18px;margin-top:10px;font-size:11px;color:var(--g4);flex-wrap:wrap}
-.ruler-legend span{display:inline-flex;align-items:center;gap:6px}
-.ruler-legend .sw{width:10px;height:10px;display:inline-block}
-.sw-busy{background:var(--black)}
-.sw-margin{background:repeating-linear-gradient(45deg, var(--g3) 0 3px, var(--g2) 3px 6px)}
-.sw-new{background:var(--red)}
 
 /* ===== FORM ===== */
 .form-box{border:1px solid var(--g2);padding:48px 40px;margin-top:40px}
 @media (max-width:768px){.form-box{padding:32px 24px}}
 .field{margin-bottom:26px}
 .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--g4);margin-bottom:10px;font-weight:600}
-.field input[type=text],.field input[type=date],.field input[type=time]{
+.field input[type=text],.field input[type=date],.field select{
   width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px;outline:none;background:var(--white);
   transition:border-color .2s;
 }
-.field input:focus{border-color:var(--black)}
+.field input:focus,.field select:focus{border-color:var(--black)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media (max-width:600px){.field-row{grid-template-columns:1fr}}
 
@@ -127,7 +97,7 @@ nav a:hover{border-color:var(--black)}
   display:flex;align-items:center;gap:16px;
 }
 .photo-preview{
-  width:150px;height:150px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);
+  width:120px;height:120px;border-radius:50%;background:var(--g1);border:1px solid var(--g2);
   display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
 }
 .photo-preview img{width:100%;height:100%;object-fit:cover}
@@ -135,15 +105,16 @@ nav a:hover{border-color:var(--black)}
 .photo-upload input[type=file]{font-size:13px;max-width:100%}
 
 .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.choice-grid.types{grid-template-columns:repeat(2,1fr)}
-@media (max-width:600px){.choice-grid.types{grid-template-columns:1fr}}
+.choice-grid.slots{grid-template-columns:repeat(4,1fr)}
+@media (max-width:700px){.choice-grid.slots{grid-template-columns:repeat(2,1fr)}}
 .choice-card{
   border:1.5px solid var(--g2);padding:18px 16px;cursor:pointer;text-align:center;transition:.15s;position:relative;
 }
 .choice-card:hover{border-color:var(--g3)}
 .choice-card.selected{border-color:var(--black);background:var(--black);color:var(--white)}
+.choice-card.disabled{opacity:.35;cursor:not-allowed;background:var(--g1);border-color:var(--g2);text-decoration:line-through}
+.choice-card.disabled:hover{border-color:var(--g2)}
 .choice-card .cname{font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
-.choice-card .cdur{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:4px;opacity:.7}
 
 .msg-box{
   margin-top:24px;padding:18px 20px;border:1.5px solid var(--black);font-size:14px;display:none;
@@ -151,7 +122,6 @@ nav a:hover{border-color:var(--black)}
 .msg-box.error{border-color:var(--red);color:var(--red);background:#fdf0ee}
 .msg-box.success{border-color:var(--black);background:var(--g1)}
 .msg-box.show{display:block}
-.msg-box .suggest-btn{margin-top:12px}
 
 .confirm-card{
   border:1.5px solid var(--black);padding:32px 28px;margin-top:24px;display:none;
@@ -173,10 +143,10 @@ footer{border-top:1px solid var(--g2);padding:50px 24px 30px;text-align:center}
 footer .logo{justify-content:center;display:flex;margin-bottom:14px}
 footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospace}
 .admin-trigger{
-  display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--g2);
-  margin-left:10px;cursor:default;transition:.3s;vertical-align:middle;
+  display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--g2);
+  margin-left:10px;cursor:pointer;transition:.3s;vertical-align:middle;
 }
-.admin-trigger:hover{background:var(--g3)}
+.admin-trigger:hover{background:var(--black)}
 
 /* ===== ADMIN MODAL/PANEL ===== */
 .overlay{
@@ -246,19 +216,9 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   width:36px;height:36px;font-size:16px;border-radius:50%;
 }
 
-/* ===== SYNC BADGE ===== */
-.sync-badge{
-  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.5px;color:var(--g4);
-  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
-}
-.sync-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--g3)}
-.sync-badge.ok .dot{background:#2e7d32}
-.sync-badge.err .dot{background:var(--red)}
-
-/* ===== EXTRA RESPONSIVE FIXES (mobile) ===== */
 @media (max-width:480px){
   .photo-upload{flex-direction:column;align-items:flex-start}
-  .photo-preview{width:110px;height:110px}
+  .photo-preview{width:100px;height:100px}
   .choice-grid{grid-template-columns:1fr}
   .form-box{padding:26px 18px}
   .header-inner{padding:16px 18px}
@@ -272,39 +232,29 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <header>
   <div class="header-inner">
     <div class="head">
-      <img class="imglogo" src="./Bloom Church-logo ok-03.png">
-    <div class="logo">RDV <span>avec mon</span> Coach</div>
+      <img class="imglogo" src="./Bloom Church-logo ok-03.png" alt="Logo">
+      <div class="logo">RDV <span>avec mon</span> Coach</div>
     </div>
   </div>
 </header>
 
 <!-- ===== HERO ===== -->
 <section class="hero">
-  <span class="eyebrow"> Coach Moise</span>
+  <span class="eyebrow">Coach Moise</span>
   <h1>Réservez votre moment<br>avec coach Moise</h1>
-  <p>Inscrivez-vous en quelques secondes pour un entretien, une salutation ou tout autre besoin. Choisissez l'heure qui vous convient — le créneau s'ajuste automatiquement.</p>
+  <p>Inscrivez-vous pour un entretien individuel de 45 minutes. Les réservations ouvrent chaque vendredi à 18h30 pour le dimanche à venir (8 places uniques).</p>
   <div class="hero-cta"><a href="#reserver" class="btn">Prendre rendez-vous</a></div>
 </section>
 
 <!-- ===== TYPES ===== -->
 <section id="types">
-  <span class="eyebrow">Les formats disponibles</span>
-  <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Trois façons de venir nous voir</h2>
+  <span class="eyebrow">Le format unique</span>
+  <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase;text-align:center">Entretien individuel</h2>
   <div class="types-grid">
     <div class="type-info">
-      <div class="dur">20 <small>MIN</small></div>
+      <div class="dur">45 <small>MIN</small></div>
       <h3>Entretien</h3>
-      <p>Un temps d'échange approfondi avec votre coach.</p>
-    </div>
-    <div class="type-info">
-      <div class="dur">2 <small>MIN</small></div>
-      <h3>prière</h3>
-      <p>Un moment de prière en privé.</p>
-    </div>
-    <div class="type-info">
-      <div class="dur">3 <small>MIN</small></div>
-      <h3>Information</h3>
-      <p>Pour toute demande rapide ou information à faire passer.</p>
+      <p>Un temps d'échange personnalisé et privilégié avec votre coach.</p>
     </div>
   </div>
 </section>
@@ -313,9 +263,9 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <section>
   <span class="eyebrow">Comment ça marche ?</span>
   <div class="steps">
-    <div class="step"><span class="snum mono">01</span><h3>Choisissez</h3><p>Votre coach, le type de rendez-vous et l'heure souhaitée.</p></div>
-    <div class="step"><span class="snum mono">02</span><h3>On ajuste</h3><p>Si le créneau est déjà pris, on vous propose l'heure disponible la plus proche.</p></div>
-    <div class="step"><span class="snum mono">03</span><h3>C'est confirmé</h3><p>Vous recevez votre créneau exact, du début à la fin.</p></div>
+    <div class="step"><span class="snum mono">01</span><h3>Ouverture</h3><p>Accès au formulaire dès le vendredi 18h30 pour le dimanche suivant.</p></div>
+    <div class="step"><span class="snum mono">02</span><h3>Choisissez</h3><p>Sélectionnez l'un des 8 créneaux de 45 minutes encore disponibles.</p></div>
+    <div class="step"><span class="snum mono">03</span><h3>C'est confirmé</h3><p>Votre rendez-vous est enregistré automatiquement pour le coach.</p></div>
   </div>
 </section>
 
@@ -325,85 +275,67 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase">Prenez votre rendez-vous</h2>
 
   <div class="form-box">
-    <div class="field">
-      <label>Votre nom complet</label>
-      <input type="text" id="pubName" placeholder="ex: Jean Kouassi">
-    </div>
+    <div id="bookingClosedNotice" class="msg-box error show" style="display:none; margin-top:0; margin-bottom:20px;"></div>
 
-    <div class="field">
-      <label>Votre photo</label>
-      <div class="photo-upload">
-        <div class="photo-preview" id="pubPhotoPreview"><span class="ph-ph">＋</span></div>
-        <input type="file" id="pubPhoto" accept="image/*">
+    <div id="bookingFormContent">
+      <div class="field">
+        <label>Votre nom complet</label>
+        <input type="text" id="pubName" placeholder="ex: Jean Kouassi">
       </div>
-    </div>
 
-
-
-    <div class="field">
-        <label>Votre département</label>
-        <div class="choice-grid" id="coachChoice">
-          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
-          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
-          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
-          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
-          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
-          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
-          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
-          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
-          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
-          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
-          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
-          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
-          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
+      <div class="field">
+        <label>Votre photo</label>
+        <div class="photo-upload">
+          <div class="photo-preview" id="pubPhotoPreview"><span class="ph-ph">＋</span></div>
+          <input type="file" id="pubPhoto" accept="image/*">
         </div>
       </div>
-    
 
-    <div class="field">
-      <label>Type de rendez-vous</label>
-      <div class="choice-grid types" id="typeChoice">
-        <div class="choice-card" data-type="entretien" data-dur="20"><div class="cname">Entretien</div><div class="cdur">20 MIN</div></div>
-        <div class="choice-card" data-type="prière" data-dur="2"><div class="cname">Prière</div><div class="cdur">2 MIN</div></div>
-        <div class="choice-card" data-type="information" data-dur="3"><div class="cname">Information</div><div class="cdur">3 MIN</div></div>
-      </div>
-    </div>
-
-  
-     
-    <div class="field">
-      <label>Les rendez vous sont prévus pour les Dimanche uniquement dans les intervalles suivants: 10h30-12h50 et 16h20-18h20 </label>
-    </div>
-
-    <div class="field-row">
       <div class="field">
-        <label>Date</label>
-        <input type="date" id="pubDate">
+        <label>Votre département</label>
+        <div class="choice-grid" id="coachChoice">
+          <div class="choice-card" data-dept="ADN"><div class="cname">ADN</div></div>
+          <div class="choice-card" data-dept="Bloom 121"><div class="cname">Bloom 121</div></div>
+          <div class="choice-card" data-dept="Bloom Art"><div class="cname">Bloom Art</div></div>
+          <div class="choice-card" data-dept="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
+          <div class="choice-card" data-dept="Bloom Deco"><div class="cname">Bloom Déco</div></div>
+          <div class="choice-card" data-dept="Bloom Praise"><div class="cname">Bloom Praise</div></div>
+          <div class="choice-card" data-dept="Bloom Studio"><div class="cname">Bloom Studio</div></div>
+          <div class="choice-card" data-dept="Evangelisation"><div class="cname">Évangelisation</div></div>
+          <div class="choice-card" data-dept="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
+          <div class="choice-card" data-dept="MRES"><div class="cname">MRES</div></div>
+          <div class="choice-card" data-dept="Prod & Tech"><div class="cname">Prod & Tech</div></div>
+          <div class="choice-card" data-dept="Portier"><div class="cname">Portier</div></div>
+          <div class="choice-card" data-dept="Protocoles"><div class="cname">Protocoles</div></div>
+        </div>
       </div>
+
       <div class="field">
-        <label>Heure souhaitée</label>
-        <input type="time" id="pubTime" step="300">
+        <label>Date du rendez-vous</label>
+        <input type="text" id="pubDateDisplay" readonly style="background:var(--g1); font-weight:600; cursor:not-allowed;">
       </div>
-    </div>
 
-    <div class="ruler-wrap" id="rulerWrap" style="display:none">
-      <div class="ruler-label"><span>10H00</span><span id="rulerCoachLabel"></span><span>21H00</span></div>
-      <div class="ruler" id="ruler"></div>
-      <div class="ruler-legend">
-        <span><i class="sw sw-busy"></i>Créneau pris</span>
-        <span><i class="sw sw-margin"></i>Réservé aux protocoles (dimanche)</span>
-        <span><i class="sw sw-new"></i>Votre créneau</span>
+      <div class="field">
+        <label>Choisissez votre tranche horaire (45 MIN)</label>
+        <div class="choice-grid slots" id="slotChoice">
+          <div class="choice-card" data-slot="10:30"><div class="cname">10h30</div></div>
+          <div class="choice-card" data-slot="11:15"><div class="cname">11h15</div></div>
+          <div class="choice-card" data-slot="12:00"><div class="cname">12h00</div></div>
+          <div class="choice-card" data-slot="16:30"><div class="cname">16h30</div></div>
+          <div class="choice-card" data-slot="17:15"><div class="cname">17h15</div></div>
+          <div class="choice-card" data-slot="18:00"><div class="cname">18h00</div></div>
+          <div class="choice-card" data-slot="18:45"><div class="cname">18h45</div></div>
+          <div class="choice-card" data-slot="19:30"><div class="cname">19h30</div></div>
+        </div>
       </div>
-    </div>
 
-    <div style="margin-top:34px">
-      <button class="btn" id="submitBtn" style="width:100%;justify-content:center">Réserver mon créneau</button>
-      <div class="sync-badge" id="syncBadge"><span class="dot"></span><span id="syncBadgeText">Connexion au serveur...</span></div>
-    </div>
+      <div style="margin-top:34px">
+        <button class="btn" id="submitBtn" style="width:100%;justify-content:center">Réserver mon créneau</button>
+      </div>
 
-    <div class="msg-box error" id="errorBox">
-      <div id="errorText"></div>
-      <button class="btn btn-outline btn-sm suggest-btn" id="suggestBtn" style="display:none">Utiliser ce créneau à la place</button>
+      <div class="msg-box error" id="errorBox">
+        <div id="errorText"></div>
+      </div>
     </div>
 
     <div class="confirm-card" id="confirmCard">
@@ -419,7 +351,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <!-- ===== FOOTER ===== -->
 <footer>
   <div class="logo">RDV <span>avec mon</span> Coach</div>
-  <div class="fnote">© Rdv avec mon Coach<span class="admin-trigger" id="adminTrigger"></span></div>
+  <div class="fnote">© Rdv avec mon Coach<span class="admin-trigger" id="adminTrigger" title="Espace Admin"></span></div>
 </footer>
 
 <!-- ===== ADMIN LOGIN MODAL ===== -->
@@ -436,31 +368,23 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <!-- ===== ADMIN PANEL ===== -->
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">
-    <h2>Espace protocoles</h2>
+    <h2>Espace protocoles (Panel Admin)</h2>
     <button class="btn btn-outline btn-sm" id="adminClose">Fermer</button>
   </div>
   <div class="admin-body">
 
     <div class="admin-filters">
       <div class="field">
-        <label>Date</label>
+        <label>Filtrer par date de dimanche</label>
         <input type="date" id="adminFilterDate">
       </div>
-      <div class="field">
-        <label>Coach</label>
-        <select id="adminFilterCoach" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
-          <option value="">Tous les coachs</option>
-          <option value="Coach Melyou">Coach Melyou</option>
-          <option value="Coach Moise">Coach Moise</option>
-        </select>
-      </div>
-      <button class="btn btn-outline" id="adminClearFilter">Effacer filtre</button>
+      <button class="btn btn-outline" id="adminClearFilter">Tous les rendez-vous</button>
     </div>
 
-    <div class="admin-section-title">Liste des rendez-vous</div>
+    <div class="admin-section-title">Liste globale des rendez-vous</div>
     <div id="adminList"></div>
 
-    <div class="admin-section-title">Ajouter un rendez-vous (jour-J)</div>
+    <div class="admin-section-title">Ajouter un rendez-vous manuellement</div>
     <div class="admin-add-box">
       <div class="field">
         <label>Nom complet</label>
@@ -474,34 +398,38 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         </div>
       </div>
       <div class="field">
-        <label>Votre département</label>
-        <div class="choice-grid" id="adminCoachChoice">
-          <div class="choice-card" data-coach="ADN"><div class="cname">ADN</div></div>
-          <div class="choice-card" data-coach="Bloom 121"><div class="cname">Bloom 121</div></div>
-          <div class="choice-card" data-coach="Bloom Art"><div class="cname">Bloom Art</div></div>
-          <div class="choice-card" data-coach="Bloom Dancer"><div class="cname">Bloom Dancer</div></div>
-          <div class="choice-card" data-coach="Bloom Deco"><div class="cname">Bloom Déco</div></div>
-          <div class="choice-card" data-coach="Bloom Praise"><div class="cname">Bloom Praise</div></div>
-          <div class="choice-card" data-coach="Bloom Studio"><div class="cname">Bloom Studio</div></div>
-          <div class="choice-card" data-coach="Evangelisation"><div class="cname">Évangelisation</div></div>
-          <div class="choice-card" data-coach="Gestion des cultes"><div class="cname">Gestion des cultes</div></div>
-          <div class="choice-card" data-coach="MRES"><div class="cname">MRES</div></div>
-          <div class="choice-card" data-coach="Prod & Tech"><div class="cname">Prod & Tech</div></div>
-          <div class="choice-card" data-coach="Portier"><div class="cname">Portier</div></div>
-          <div class="choice-card" data-coach="Protocoles"><div class="cname">Protocoles</div></div>
-        </div>
-      </div>
-      <div class="field">
-        <label>Type de rendez-vous</label>
-        <div class="choice-grid types" id="adminTypeChoice">
-          <div class="choice-card" data-type="entretien" data-dur="45"><div class="cname">Entretien</div><div class="cdur">45 MIN</div></div>
-          <div class="choice-card" data-type="salutation" data-dur="5"><div class="cname">Salutation</div><div class="cdur">5 MIN</div></div>
-          <div class="choice-card" data-type="autre" data-dur="15"><div class="cname">Autre chose</div><div class="cdur">15 MIN</div></div>
-        </div>
+        <label>Département</label>
+        <select id="adminDept" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+          <option value="ADN">ADN</option>
+          <option value="Bloom 121">Bloom 121</option>
+          <option value="Bloom Art">Bloom Art</option>
+          <option value="Bloom Dancer">Bloom Dancer</option>
+          <option value="Bloom Déco">Bloom Déco</option>
+          <option value="Bloom Praise">Bloom Praise</option>
+          <option value="Bloom Studio">Bloom Studio</option>
+          <option value="Évangelisation">Évangelisation</option>
+          <option value="Gestion des cultes">Gestion des cultes</option>
+          <option value="MRES">MRES</option>
+          <option value="Prod & Tech">Prod & Tech</option>
+          <option value="Portier">Portier</option>
+          <option value="Protocoles">Protocoles</option>
+        </select>
       </div>
       <div class="field-row">
-        <div class="field"><label>Date</label><input type="date" id="adminDate"></div>
-        <div class="field"><label>Heure</label><input type="time" id="adminTime" step="300"></div>
+        <div class="field"><label>Date (Dimanche)</label><input type="date" id="adminDate"></div>
+        <div class="field">
+          <label>Heure</label>
+          <select id="adminSlot" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+            <option value="10:30">10h30</option>
+            <option value="11:15">11h15</option>
+            <option value="12:00">12h00</option>
+            <option value="16:30">16h30</option>
+            <option value="17:15">17h15</option>
+            <option value="18:00">18h00</option>
+            <option value="18:45">18h45</option>
+            <option value="19:30">19h30</option>
+          </select>
+        </div>
       </div>
       <button class="btn" id="adminSubmit" style="width:100%;justify-content:center">Ajouter ce rendez-vous</button>
       <div class="msg-box error" id="adminErrorBox" style="margin-top:18px">
@@ -519,564 +447,298 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <div class="po-name" id="photoOverlayName"></div>
 </div>
 
-<script>
-/* ================= CONFIG ================= */
-const ADMIN_CODE = "Protocoles2026";
-const DURATIONS = { entretien: 20, prière: 2, information: 3 };
-const TYPE_LABELS = { entretien: "Entretien", prière: "Prière", information: "Information" };
-const OPENING = 10*60;      // 10h00
-const CLOSING = 21*60;     // 21h00
-const SUNDAY_MARGIN_START = 18*60; // 18h00
-const SUNDAY_MARGIN_END = 21*60;   // 21h00 (marge de 3h)
-
-/* ================= APPOINTMENTS STATE (synced live from Firestore) ================= */
-let appointments = [];
-
-/* ================= TIME HELPERS ================= */
-function toMinutes(t){ const [h,m] = t.split(':').map(Number); return h*60+m; }
-function toFrenchTime(mins){
-  mins = Math.round(mins);
-  const h = Math.floor(mins/60), m = mins%60;
-  return h + 'h' + String(m).padStart(2,'0');
-}
-function isSunday(dateStr){
-  const d = new Date(dateStr+'T00:00:00');
-  return d.getDay() === 0;
-}
-function todayStr(){
-  const d = new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-
-/* ================= AVAILABILITY LOGIC ================= */
-function getBookingsFor(coach, date){
-  return appointments
-    .filter(a => a.coach === coach && a.date === date)
-    .sort((a,b) => a.start - b.start);
-}
-
-function overlaps(startA, endA, startB, endB){
-  return startA < endB && endA > startB;
-}
-
-// Returns {ok:true,start,end} or {ok:false, reason, suggestion}
-function checkSlot(coach, date, type, requestedStart, isAdmin){
-  const duration = DURATIONS[type];
-  const start = requestedStart;
-  const end = start + duration;
-
-  if(start < OPENING || end > CLOSING){
-    return {ok:false, reason:"Les rendez-vous se prennent entre 10h00 et 21h00."};
-  }
-
-  if(isSunday(date) && !isAdmin){
-    if(overlaps(start,end,SUNDAY_MARGIN_START,SUNDAY_MARGIN_END)){
-      const sug = findNextAvailable(coach,date,type,start,isAdmin);
-      return {ok:false, reason:"De 18h00 à 21h00 le dimanche, les créneaux sont réservés aux protocoles. Merci de choisir un horaire avant 18h00.", suggestion: sug};
-    }
-  }
-
-  const bookings = getBookingsFor(coach,date);
-  for(const b of bookings){
-    if(overlaps(start,end,b.start,b.end)){
-      const sug = findNextAvailable(coach,date,type,start,isAdmin);
-      return {ok:false, reason:"Ce créneau est déjà pris pour "+coach+" (occupé jusqu'à "+toFrenchTime(b.end)+").", suggestion: sug};
-    }
-  }
-
-  return {ok:true, start, end};
-}
-
-function findNextAvailable(coach,date,type,fromStart,isAdmin){
-  const duration = DURATIONS[type];
-  const bookings = getBookingsFor(coach,date);
-  let candidate = Math.max(fromStart, OPENING);
-  const effectiveClosing = (isSunday(date) && !isAdmin) ? SUNDAY_MARGIN_START : CLOSING;
-  let iterations = 0;
-
-  while(iterations < 300){
-    iterations++;
-    const candEnd = candidate + duration;
-
-    if(candEnd > effectiveClosing){
-      return null; // pas de créneau disponible
-    }
-
-    let conflict = null;
-    for(const b of bookings){
-      if(overlaps(candidate,candEnd,b.start,b.end)){ conflict = b; break; }
-    }
-    if(!conflict){
-      return candidate;
-    }
-    candidate = conflict.end;
-  }
-  return null;
-}
-
-/* ================= RULER RENDERING ================= */
-function renderRuler(containerId, coach, date, previewStart, previewDuration){
-  const ruler = document.getElementById(containerId);
-  ruler.innerHTML = '';
-  const totalStart = OPENING, totalEnd = CLOSING, span = totalEnd-totalStart;
-
-  function pct(mins){ return ((mins-totalStart)/span)*100; }
-
-  // hour ticks
-  for(let h=8; h<21; h+=2){
-    const tick = document.createElement('div');
-    tick.className='tick';
-    tick.style.left = pct(h*60)+'%';
-    ruler.appendChild(tick);
-  }
-
-  // sunday margin
-  if(date && isSunday(date)){
-    const m = document.createElement('div');
-    m.className='block margin';
-    m.style.left = pct(SUNDAY_MARGIN_START)+'%';
-    m.style.width = (pct(SUNDAY_MARGIN_END)-pct(SUNDAY_MARGIN_START))+'%';
-    ruler.appendChild(m);
-  }
-
-  // existing bookings
-  if(coach && date){
-    getBookingsFor(coach,date).forEach(b=>{
-      const el = document.createElement('div');
-      el.className='block';
-      el.style.left = pct(b.start)+'%';
-      el.style.width = Math.max(pct(b.end)-pct(b.start),0.6)+'%';
-      ruler.appendChild(el);
-    });
-  }
-
-  // preview of new appointment
-  if(previewStart !== null && previewDuration){
-    const el = document.createElement('div');
-    el.className='block preview';
-    el.style.left = pct(previewStart)+'%';
-    el.style.width = Math.max(pct(previewStart+previewDuration)-pct(previewStart),0.6)+'%';
-    ruler.appendChild(el);
-  }
-}
-
-/* ================= PHOTO UPLOAD HELPER ================= */
-function setupPhotoUpload(inputId, previewId, state){
-  document.getElementById(inputId).addEventListener('change', function(){
-    const file = this.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = e=>{
-      state.photo = e.target.result;
-      document.getElementById(previewId).innerHTML = '<img src="'+e.target.result+'">';
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ================= CHOICE CARD HELPER ================= */
-function setupChoiceGroup(containerId, dataAttr, state, stateKey, onChange){
-  document.querySelectorAll('#'+containerId+' .choice-card').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      document.querySelectorAll('#'+containerId+' .choice-card').forEach(c=>c.classList.remove('selected'));
-      card.classList.add('selected');
-      state[stateKey] = card.dataset[dataAttr];
-      if(onChange) onChange(card);
-    });
-  });
-}
-
-/* ================= PHOTO ZOOM MODAL ================= */
-function openPhotoModal(url, name){
-  if(!url) return;
-  document.getElementById('photoOverlayImg').src = url;
-  document.getElementById('photoOverlayName').textContent = name || '';
-  document.getElementById('photoOverlay').classList.add('open');
-}
-function closePhotoModal(){
-  document.getElementById('photoOverlay').classList.remove('open');
-}
-document.getElementById('photoOverlayClose').addEventListener('click', closePhotoModal);
-document.getElementById('photoOverlay').addEventListener('click', (e)=>{
-  if(e.target.id === 'photoOverlay') closePhotoModal();
-});
-document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closePhotoModal(); });
-
-/* ================================================================
-   PUBLIC BOOKING FORM
-   ================================================================ */
-const pubState = { coach:null, type:null, duration:null, photo:null };
-
-setupPhotoUpload('pubPhoto','pubPhotoPreview',pubState);
-setupChoiceGroup('coachChoice','coach',pubState,'coach', updatePubRuler);
-setupChoiceGroup('typeChoice','type',pubState,'type', (card)=>{ pubState.duration = parseInt(card.dataset.dur); updatePubRuler(); });
-
-document.getElementById('pubDate').min = todayStr();
-document.getElementById('pubDate').value = todayStr();
-document.getElementById('pubDate').addEventListener('change', updatePubRuler);
-document.getElementById('pubTime').addEventListener('change', updatePubRuler);
-
-function updatePubRuler(){
-  const date = document.getElementById('pubDate').value;
-  const time = document.getElementById('pubTime').value;
-  if(pubState.coach && date){
-    document.getElementById('rulerWrap').style.display='block';
-    document.getElementById('rulerCoachLabel').textContent = pubState.coach;
-    const previewStart = time ? toMinutes(time) : null;
-    renderRuler('ruler', pubState.coach, date, previewStart, pubState.duration);
-  } else {
-    document.getElementById('rulerWrap').style.display='none';
-  }
-}
-
-document.getElementById('submitBtn').addEventListener('click', async ()=>{
-  const name = document.getElementById('pubName').value.trim();
-  const date = document.getElementById('pubDate').value;
-  const time = document.getElementById('pubTime').value;
-  const errorBox = document.getElementById('errorBox');
-  const suggestBtn = document.getElementById('suggestBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  errorBox.classList.remove('show');
-  suggestBtn.style.display='none';
-  document.getElementById('confirmCard').classList.remove('show');
-
-  if(!name){ showPubError("Merci d'indiquer votre nom complet."); return; }
-  if(!pubState.coach){ showPubError("Merci d'indiquer votre département."); return; }
-  if(!pubState.type){ showPubError("Merci de choisir un type de rendez-vous."); return; }
-  if(!date || !time){ showPubError("Merci de choisir une date et une heure."); return; }
-
-  const start = toMinutes(time);
-  const result = checkSlot(pubState.coach, date, pubState.type, start, false);
-
-  if(!result.ok){
-    showPubError(result.reason);
-    if(result.suggestion !== undefined && result.suggestion !== null){
-      suggestBtn.style.display='inline-flex';
-      suggestBtn.textContent = "Utiliser "+toFrenchTime(result.suggestion)+" à la place";
-      suggestBtn.onclick = ()=>{
-        document.getElementById('pubTime').value = String(Math.floor(result.suggestion/60)).padStart(2,'0')+':'+String(result.suggestion%60).padStart(2,'0');
-        updatePubRuler();
-        errorBox.classList.remove('show');
-      };
-    } else if(result.suggestion === null){
-      suggestBtn.style.display='none';
-    }
-    updatePubRuler();
-    return;
-  }
-
-  const apptData = {
-    name, photo: pubState.photo || null,
-    coach: pubState.coach, type: pubState.type,
-    date, start: result.start, end: result.end,
-    done:false, createdBy:'public', createdAt: Date.now()
-  };
-
-  submitBtn.disabled = true;
-  const originalLabel = submitBtn.textContent;
-  submitBtn.textContent = 'Enregistrement...';
-
-  try{
-    await window.saveAppointmentToFirestore(apptData);
-
-    document.getElementById('confirmPhoto').src = apptData.photo || '';
-    document.getElementById('confirmPhoto').style.display = apptData.photo ? 'block':'none';
-    document.getElementById('confirmTitle').textContent = "Rendez-vous confirmé";
-    document.getElementById('confirmDetail').textContent =
-      name+" de "+pubState.coach+" pour "+TYPE_LABELS[pubState.type]+" · "+formatDateFr(date)+" de "+toFrenchTime(result.start)+" à "+toFrenchTime(result.end);
-    document.getElementById('confirmCard').classList.add('show');
-
-    document.getElementById('pubName').value = '';
-    pubState.photo = null;
-    document.getElementById('pubPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
-
-    updatePubRuler();
-  }catch(err){
-    console.error('Erreur Firestore:', err);
-    showPubError("Impossible d'enregistrer le rendez-vous (problème de connexion). Merci de réessayer.");
-  }finally{
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalLabel;
-  }
-});
-
-function showPubError(text){
-  document.getElementById('errorText').textContent = text;
-  document.getElementById('errorBox').classList.add('show');
-}
-
-function formatDateFr(dateStr){
-  const d = new Date(dateStr+'T00:00:00');
-  const days=['Dimanche'];
-  const months=['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
-  return days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
-}
-
-/* ================================================================
-   ADMIN — LOGIN
-   ================================================================ */
-document.getElementById('adminTrigger').addEventListener('click', ()=>{
-  document.getElementById('loginOverlay').classList.add('open');
-  document.getElementById('adminCode').value='';
-  document.getElementById('loginErr').classList.remove('show');
-});
-document.getElementById('loginCancel').addEventListener('click', ()=>{
-  document.getElementById('loginOverlay').classList.remove('open');
-});
-document.getElementById('loginOverlay').addEventListener('click', (e)=>{
-  if(e.target.id==='loginOverlay') document.getElementById('loginOverlay').classList.remove('open');
-});
-document.getElementById('loginSubmit').addEventListener('click', tryAdminLogin);
-document.getElementById('adminCode').addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryAdminLogin(); });
-
-function tryAdminLogin(){
-  const code = document.getElementById('adminCode').value;
-  if(code === ADMIN_CODE){
-    document.getElementById('loginOverlay').classList.remove('open');
-    document.getElementById('adminPanel').classList.add('open');
-    document.getElementById('adminDate').value = todayStr();
-    renderAdminList();
-  } else {
-    document.getElementById('loginErr').classList.add('show');
-  }
-}
-document.getElementById('adminClose').addEventListener('click', ()=>{
-  document.getElementById('adminPanel').classList.remove('open');
-});
-
-/* ================================================================
-   ADMIN — LIST / FILTER / CHECK / DELETE
-   ================================================================ */
-document.getElementById('adminFilterDate').addEventListener('change', renderAdminList);
-document.getElementById('adminFilterCoach').addEventListener('change', renderAdminList);
-document.getElementById('adminClearFilter').addEventListener('click', ()=>{
-  document.getElementById('adminFilterDate').value='';
-  document.getElementById('adminFilterCoach').value='';
-  renderAdminList();
-});
-
-function renderAdminList(){
-  const fDate = document.getElementById('adminFilterDate').value;
-  const fCoach = document.getElementById('adminFilterCoach').value;
-
-  let list = [...appointments];
-  if(fDate) list = list.filter(a=>a.date===fDate);
-  if(fCoach) list = list.filter(a=>a.coach===fCoach);
-  list.sort((a,b)=> a.date===b.date ? a.start-b.start : a.date.localeCompare(b.date));
-
-  const container = document.getElementById('adminList');
-  if(list.length===0){
-    container.innerHTML = '<div class="empty-state">Aucun rendez-vous pour ce filtre.</div>';
-    return;
-  }
-
-  container.innerHTML = list.map(a=>`
-    <div class="appt-row ${a.done?'done':''}">
-      ${a.photo ? '<img src="'+a.photo+'" data-appt-id="'+a.id+'" title="Cliquer pour agrandir">' : '<div style="width:42px;height:42px;border-radius:50%;background:var(--g1);border:1px solid var(--g2)"></div>'}
-      <div class="ai-main">
-        <div class="ai-name">${escapeHtml(a.name)}</div>
-        <div class="ai-meta">${formatDateFr(a.date)} · ${toFrenchTime(a.start)}–${toFrenchTime(a.end)} · ${TYPE_LABELS[a.type]} · ${a.coach}</div>
-      </div>
-      <div class="ai-actions">
-        <input type="checkbox" ${a.done?'checked':''} data-toggle-id="${a.id}" title="Passé">
-        <button class="del-btn" data-delete-id="${a.id}">✕</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-// Délégation d'événement : zoom photo, cocher "passé", supprimer.
-// Évite d'injecter noms/photos directement dans des attributs onclick (plus robuste avec accents, apostrophes, etc.)
-document.getElementById('adminList').addEventListener('click', (e)=>{
-  const img = e.target.closest('img[data-appt-id]');
-  if(img){
-    const a = appointments.find(x=>x.id === img.dataset.apptId);
-    if(a) openPhotoModal(a.photo, a.name);
-    return;
-  }
-  const delBtn = e.target.closest('[data-delete-id]');
-  if(delBtn){ deleteAppt(delBtn.dataset.deleteId); }
-});
-document.getElementById('adminList').addEventListener('change', (e)=>{
-  const chk = e.target.closest('[data-toggle-id]');
-  if(chk){ toggleDone(chk.dataset.toggleId); }
-});
-
-function escapeHtml(s){
-  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
-}
-
-async function toggleDone(id){
-  const a = appointments.find(x=>x.id===id);
-  if(!a) return;
-  try{
-    await window.updateAppointmentInFirestore(id, { done: !a.done });
-  }catch(err){
-    console.error('Erreur Firestore (toggleDone):', err);
-    alert("Impossible de mettre à jour ce rendez-vous (problème de connexion).");
-  }
-}
-async function deleteAppt(id){
-  try{
-    await window.deleteAppointmentFromFirestore(id);
-  }catch(err){
-    console.error('Erreur Firestore (delete):', err);
-    alert("Impossible de supprimer ce rendez-vous (problème de connexion).");
-  }
-}
-
-/* ================================================================
-   ADMIN — ADD APPOINTMENT (jour-J, bypasses dimanche margin)
-   ================================================================ */
-const adminState = { coach:null, type:null, duration:null, photo:null };
-setupPhotoUpload('adminPhoto','adminPhotoPreview',adminState);
-setupChoiceGroup('adminCoachChoice','coach',adminState,'coach');
-setupChoiceGroup('adminTypeChoice','type',adminState,'type', (card)=>{ adminState.duration = parseInt(card.dataset.dur); });
-
-document.getElementById('adminSubmit').addEventListener('click', async ()=>{
-  const name = document.getElementById('adminName').value.trim();
-  const date = document.getElementById('adminDate').value;
-  const time = document.getElementById('adminTime').value;
-  const errBox = document.getElementById('adminErrorBox');
-  const adminSubmitBtn = document.getElementById('adminSubmit');
-  errBox.classList.remove('show');
-
-  if(!name || !adminState.coach || !adminState.type || !date || !time){
-    document.getElementById('adminErrorText').textContent = "Merci de remplir tous les champs.";
-    errBox.classList.add('show');
-    return;
-  }
-
-  const start = toMinutes(time);
-  const result = checkSlot(adminState.coach, date, adminState.type, start, true);
-
-  if(!result.ok){
-    document.getElementById('adminErrorText').textContent = result.reason;
-    errBox.classList.add('show');
-    return;
-  }
-
-  const apptData = {
-    name, photo:adminState.photo||null,
-    coach:adminState.coach, type:adminState.type,
-    date, start:result.start, end:result.end, done:false, createdBy:'admin', createdAt: Date.now()
-  };
-
-  adminSubmitBtn.disabled = true;
-  const originalLabel = adminSubmitBtn.textContent;
-  adminSubmitBtn.textContent = 'Enregistrement...';
-
-  try{
-    await window.saveAppointmentToFirestore(apptData);
-
-    document.getElementById('adminName').value='';
-    document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
-    adminState.photo=null; adminState.coach=null; adminState.type=null; adminState.duration=null;
-    document.querySelectorAll('#adminCoachChoice .choice-card, #adminTypeChoice .choice-card').forEach(c=>c.classList.remove('selected'));
-  }catch(err){
-    console.error('Erreur Firestore (admin add):', err);
-    document.getElementById('adminErrorText').textContent = "Impossible d'enregistrer (problème de connexion). Merci de réessayer.";
-    errBox.classList.add('show');
-  }finally{
-    adminSubmitBtn.disabled = false;
-    adminSubmitBtn.textContent = originalLabel;
-  }
-});
-
-/* ================================================================
-   FIRESTORE LIVE SYNC
-   Démarré depuis le module Firebase une fois `window.db` prêt.
-   Toutes les inscriptions (peu importe l'appareil) sont stockées
-   dans la collection "appointments" et synchronisées en temps réel
-   ici, dans le tableau `appointments`.
-   ================================================================ */
-function setSyncBadge(state, text){
-  const badge = document.getElementById('syncBadge');
-  const label = document.getElementById('syncBadgeText');
-  if(!badge) return;
-  badge.classList.remove('ok','err');
-  if(state) badge.classList.add(state);
-  label.textContent = text;
-}
-
-window.startAppointmentsSync = function(){
-  const { db, collection, onSnapshot } = window;
-  const apptsRef = collection(db, 'appointments');
-  onSnapshot(apptsRef, (snapshot)=>{
-    appointments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    setSyncBadge('ok', 'Connecté — synchronisation en temps réel');
-    updatePubRuler();
-    if(document.getElementById('adminPanel').classList.contains('open')){
-      renderAdminList();
-    }
-  }, (error)=>{
-    console.error('Erreur de synchronisation Firestore:', error);
-    setSyncBadge('err', 'Connexion au serveur impossible — vérifiez votre internet');
-  });
-};
-
-window.saveAppointmentToFirestore = async function(apptData){
-  const { db, collection, addDoc } = window;
-  return addDoc(collection(db,'appointments'), apptData);
-};
-
-window.updateAppointmentInFirestore = async function(id, changes){
-  const { db, doc, updateDoc } = window;
-  return updateDoc(doc(db,'appointments',id), changes);
-};
-
-window.deleteAppointmentFromFirestore = async function(id){
-  const { db, doc, deleteDoc } = window;
-  return deleteDoc(doc(db,'appointments',id));
-};
-
-</script>
-
+<!-- Inclusion des SDK Firebase Web (v10) -->
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { 
+    getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  // 1. REMPLACE PAR TA CONFIGURATION FIREBASE
+  const firebaseConfig = {
+   apiKey: "AIzaSyBYiCakntXSyBGebQXmA-vDBUi3xh1VmOw",
+   authDomain: "rdv-bloom.firebaseapp.com",
+   projectId: "rdv-bloom",
+   storageBucket: "rdv-bloom.firebasestorage.app",
+   messagingSenderId: "151685023076",
+   appId: "1:151685023076:web:06087df8ad296939e76671"
+  };
 
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc,
-updateDoc,
-onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  // Initialisation de Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const appointmentsRef = collection(db, "appointments");
 
-const firebaseConfig = {
- apiKey: "AIzaSyB6FrZzzt45TPP5FEDO8X44UtQa2IWt8nI",
-  authDomain: "rdv-coach.firebaseapp.com",
-  projectId: "rdv-coach",
-  storageBucket: "rdv-coach.firebasestorage.app",
-  messagingSenderId: "651597483326",
-  appId: "1:651597483326:web:bec9650d36c9844d71b06f"
-};
+  /* ================= CONFIGURATION ================= */
+  const ADMIN_CODE = "Protocoles2026";
+  let appointments = [];
 
-const app = initializeApp(firebaseConfig);
+  const pubState = { dept: null, slot: null, photo: null };
+  const adminState = { photo: null };
 
-const db = getFirestore(app);
+  /* ================= DATES & DISPONIBILITÉS ================= */
+  function getTargetSundayDate(now = new Date()) {
+    const day = now.getDay(); 
+    const d = new Date(now);
+    if (day === 0) return d;
+    const diff = 7 - day;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
 
-window.db=db;
-window.collection=collection;
-window.addDoc=addDoc;
-window.getDocs=getDocs;
-window.deleteDoc=deleteDoc;
-window.doc=doc;
-window.updateDoc=updateDoc;
-window.onSnapshot=onSnapshot;
+  function formatDateISO(d) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
-// Démarre la synchronisation en temps réel dès que Firebase est prêt
-if(window.startAppointmentsSync){
-  window.startAppointmentsSync();
-}
+  function formatDateFrench(dateStr) {
+    const [y, m, d] = dateStr.split('-');
+    return `${d}/${m}/${y}`;
+  }
 
+  function checkWindowAvailability() {
+    const now = new Date();
+    const day = now.getDay();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const targetSunday = getTargetSundayDate(now);
+    const targetSundayStr = formatDateISO(targetSunday);
+
+    let isOpen = false;
+    let reason = "";
+
+    if (day === 5) { // Vendredi
+      if (currentMinutes >= (18 * 60 + 30)) isOpen = true;
+      else reason = "Les réservations pour ce dimanche ouvrent ce vendredi à 18h30.";
+    } else if (day === 6) { // Samedi
+      isOpen = true;
+    } else if (day === 0) { // Dimanche
+      if (currentMinutes <= (19 * 60 + 30)) isOpen = true;
+      else reason = "Les réservations pour ce dimanche sont fermées (19h30 dépassé).";
+    } else {
+      reason = "La prise de RDV est ouverte du vendredi 18h30 au dimanche 19h30.";
+    }
+
+    const currentSundayBookings = appointments.filter(a => a.date === targetSundayStr);
+    if (isOpen && currentSundayBookings.length >= 8) {
+      isOpen = false;
+      reason = "Tous les 8 créneaux pour ce dimanche sont déjà occupés.";
+    }
+
+    return { isOpen, reason, targetSundayStr };
+  }
+
+  /* ================= TEMPS RÉEL FIREBASE ================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    const windowStatus = checkWindowAvailability();
+    document.getElementById('pubDateDisplay').value = formatDateFrench(windowStatus.targetSundayStr) + " (Dimanche)";
+
+    const closedNotice = document.getElementById('bookingClosedNotice');
+    const formContent = document.getElementById('bookingFormContent');
+
+    if (!windowStatus.isOpen) {
+      closedNotice.innerText = windowStatus.reason;
+      closedNotice.style.display = 'block';
+      formContent.style.opacity = '0.5';
+      formContent.style.pointerEvents = 'none';
+    }
+
+    // Écoute en temps réel de la base de données
+    onSnapshot(appointmentsRef, (snapshot) => {
+      appointments = [];
+      snapshot.forEach((docSnap) => {
+        appointments.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      // Met à jour l'affichage des heures chez tout le monde instantanément
+      updateSlotCards(windowStatus.targetSundayStr);
+
+      // Si le panel admin est ouvert, on rafraîchit la liste
+      if (document.getElementById('adminPanel').classList.contains('open')) {
+        renderAdminList();
+      }
+    });
+
+    setupPhotoUpload('pubPhoto', 'pubPhotoPreview', pubState);
+    setupPhotoUpload('adminPhoto', 'adminPhotoPreview', adminState);
+    setupChoiceGroup('coachChoice', 'dept', pubState, 'dept');
+    setupChoiceGroup('slotChoice', 'slot', pubState, 'slot');
+  });
+
+  function updateSlotCards(targetSundayStr) {
+    const takenSlots = appointments
+      .filter(a => a.date === targetSundayStr)
+      .map(a => a.slot);
+
+    document.querySelectorAll('#slotChoice .choice-card').forEach(card => {
+      const slot = card.dataset.slot;
+      if (takenSlots.includes(slot)) {
+        card.classList.add('disabled');
+      } else {
+        card.classList.remove('disabled');
+      }
+    });
+  }
+
+  /* ================= HELPERS SELECTION & PHOTO ================= */
+  function setupPhotoUpload(inputId, previewId, state){
+    document.getElementById(inputId).addEventListener('change', function(){
+      const file = this.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        state.photo = e.target.result;
+        document.getElementById(previewId).innerHTML = '<img src="'+e.target.result+'">';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function setupChoiceGroup(containerId, dataAttr, state, stateKey){
+    document.querySelectorAll('#'+containerId+' .choice-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.classList.contains('disabled')) return;
+        document.querySelectorAll('#'+containerId+' .choice-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        state[stateKey] = card.dataset[dataAttr];
+      });
+    });
+  }
+
+  /* ================= ENREGISTREMENT DANS FIREBASE ================= */
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const name = document.getElementById('pubName').value.trim();
+    const errorBox = document.getElementById('errorBox');
+    const errorText = document.getElementById('errorText');
+    const confirmCard = document.getElementById('confirmCard');
+
+    errorBox.classList.remove('show');
+    const windowStatus = checkWindowAvailability();
+
+    if (!windowStatus.isOpen) {
+      errorText.innerText = windowStatus.reason;
+      errorBox.classList.add('show');
+      return;
+    }
+    if (!name || !pubState.dept || !pubState.slot) {
+      errorText.innerText = "Veuillez remplir tous les champs.";
+      errorBox.classList.add('show');
+      return;
+    }
+
+    // Vérification de sécurité anti-doublon
+    const exists = appointments.some(a => a.date === windowStatus.targetSundayStr && a.slot === pubState.slot);
+    if (exists) {
+      errorText.innerText = "Ce créneau vient d'être réservé par quelqu'un d'autre.";
+      errorBox.classList.add('show');
+      updateSlotCards(windowStatus.targetSundayStr);
+      return;
+    }
+
+    try {
+      // Sauvegarde Firestore
+      await addDoc(appointmentsRef, {
+        name: name,
+        photo: pubState.photo || null,
+        dept: pubState.dept,
+        date: windowStatus.targetSundayStr,
+        slot: pubState.slot,
+        done: false,
+        createdAt: new Date().toISOString()
+      });
+
+      // Masquer le formulaire et afficher le billet de confirmation
+      document.getElementById('bookingFormContent').style.display = 'none';
+      document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
+      document.getElementById('confirmTitle').innerText = "Rendez-vous Confirmé !";
+      document.getElementById('confirmDetail').innerHTML = `
+        <strong>Nom :</strong> ${name}<br>
+        <strong>Département :</strong> ${pubState.dept}<br>
+        <strong>Date :</strong> ${formatDateFrench(windowStatus.targetSundayStr)}<br>
+        <strong>Horaire :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
+      `;
+      confirmCard.classList.add('show');
+    } catch (e) {
+      errorText.innerText = "Erreur lors de l'enregistrement. Réessayez.";
+      errorBox.classList.add('show');
+    }
+  });
+
+  /* ================= LOGIQUE ADMIN FIREBASE ================= */
+  const loginOverlay = document.getElementById('loginOverlay');
+  const adminPanel = document.getElementById('adminPanel');
+
+  document.getElementById('adminTrigger').addEventListener('click', () => loginOverlay.classList.add('open'));
+  document.getElementById('loginCancel').addEventListener('click', () => loginOverlay.classList.remove('open'));
+
+  document.getElementById('loginSubmit').addEventListener('click', () => {
+    if (document.getElementById('adminCode').value === ADMIN_CODE) {
+      loginOverlay.classList.remove('open');
+      document.getElementById('adminCode').value = '';
+      document.getElementById('loginErr').classList.remove('show');
+      adminPanel.classList.add('open');
+      renderAdminList();
+    } else {
+      document.getElementById('loginErr').classList.add('show');
+    }
+  });
+
+  document.getElementById('adminClose').addEventListener('click', () => adminPanel.classList.remove('open'));
+
+  function renderAdminList() {
+    const listContainer = document.getElementById('adminList');
+    const filterDate = document.getElementById('adminFilterDate').value;
+    listContainer.innerHTML = '';
+
+    let filtered = [...appointments];
+    if (filterDate) filtered = filtered.filter(a => a.date === filterDate);
+
+    filtered.sort((a, b) => a.date.localeCompare(b.date) || a.slot.localeCompare(b.slot));
+
+    if (filtered.length === 0) {
+      listContainer.innerHTML = '<div class="empty-state">Aucun rendez-vous enregistré.</div>';
+      return;
+    }
+
+    filtered.forEach(a => {
+      const row = document.createElement('div');
+      row.className = `appt-row ${a.done ? 'done' : ''}`;
+      const photoSrc = a.photo || './Bloom Church-logo ok-03.png';
+
+      row.innerHTML = `
+        <img src="${photoSrc}">
+        <div class="ai-main">
+          <div class="ai-name">${a.name}</div>
+          <div class="ai-meta">Dimanche ${formatDateFrench(a.date)} à ${a.slot.replace(':', 'h')} | ${a.dept}</div>
+        </div>
+        <div class="ai-actions">
+          <label style="font-size:12px; display:flex; align-items:center; gap:4px;">
+            <input type="checkbox" ${a.done ? 'checked' : ''} class="toggle-done" data-id="${a.id}"> Fait
+          </label>
+          <button class="del-btn" data-id="${a.id}">✕</button>
+        </div>
+      `;
+
+      row.querySelector('.toggle-done').addEventListener('change', async (e) => {
+        await updateDoc(doc(db, "appointments", a.id), { done: e.target.checked });
+      });
+
+      row.querySelector('.del-btn').addEventListener('click', async () => {
+        if (confirm("Supprimer ce rendez-vous ?")) {
+          await deleteDoc(doc(db, "appointments", a.id));
+        }
+      });
+
+      listContainer.appendChild(row);
+    });
+  }
+
+  document.getElementById('adminFilterDate').addEventListener('change', renderAdminList);
+  document.getElementById('adminClearFilter').addEventListener('click', () => {
+    document.getElementById('adminFilterDate').value = '';
+    renderAdminList();
+  });
 </script>
-
-
-
 </body>
 </html>

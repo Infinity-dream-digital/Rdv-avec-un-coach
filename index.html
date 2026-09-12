@@ -17,6 +17,7 @@
   --g3:#b5b3af;
   --g4:#6b6965;
   --red:#c0392b;
+  --green:#27ae60;
 }
 html{scroll-behavior:smooth}
 body{
@@ -120,17 +121,17 @@ nav a:hover{border-color:var(--black)}
   margin-top:24px;padding:18px 20px;border:1.5px solid var(--black);font-size:14px;display:none;
 }
 .msg-box.error{border-color:var(--red);color:var(--red);background:#fdf0ee}
-.msg-box.success{border-color:var(--black);background:var(--g1)}
+.msg-box.success{border-color:var(--green);color:#1e8449;background:#eafaf1}
 .msg-box.show{display:block}
 
 .confirm-card{
-  border:1.5px solid var(--black);padding:32px 28px;margin-top:10px;display:none;
-  background:var(--g1);border-radius:8px;
+  border:2px solid var(--green);padding:24px;margin-bottom:30px;display:none;
+  background:#eafaf1;border-radius:8px;
 }
 .confirm-card.show{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
 .confirm-card img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:1px solid var(--g2)}
-.confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:16px;text-transform:uppercase;margin-bottom:8px;color:var(--black)}
-.confirm-card .cc-detail{font-size:14px;color:var(--black);line-height:1.7}
+.confirm-card .cc-title{font-family:'Unbounded',sans-serif;font-size:15px;text-transform:uppercase;margin-bottom:6px;color:var(--green)}
+.confirm-card .cc-detail{font-size:13.5px;color:var(--black);line-height:1.6}
 
 /* ===== COMMENT CA MARCHE ===== */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:46px}
@@ -278,6 +279,15 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <div class="form-box">
     <div id="bookingClosedNotice" class="msg-box error" style="display:none; margin-top:0; margin-bottom:20px;"></div>
 
+    <!-- MESSAGE DE CONFIRMATION VERT (Affiché après envoi) -->
+    <div class="confirm-card" id="confirmCard">
+      <img id="confirmPhoto" src="" alt="Photo du client">
+      <div>
+        <div class="cc-title" id="confirmTitle">✓ Rendez-vous Confirmé !</div>
+        <div class="cc-detail" id="confirmDetail"></div>
+      </div>
+    </div>
+
     <div id="bookingFormContent">
       <div class="field">
         <label>Votre nom complet</label>
@@ -337,15 +347,6 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
       <div class="msg-box error" id="errorBox">
         <div id="errorText"></div>
-      </div>
-    </div>
-
-    <!-- CARTE DE CONFIRMATION DE RENDEZ-VOUS -->
-    <div class="confirm-card" id="confirmCard">
-      <img id="confirmPhoto" src="" alt="Photo du client">
-      <div>
-        <div class="cc-title" id="confirmTitle">Rendez-vous Confirmé !</div>
-        <div class="cc-detail" id="confirmDetail"></div>
       </div>
     </div>
 
@@ -607,13 +608,25 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     });
   }
 
+  function resetForm() {
+    document.getElementById('pubName').value = '';
+    document.getElementById('pubPhoto').value = '';
+    document.getElementById('pubPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+    
+    document.querySelectorAll('#coachChoice .choice-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('#slotChoice .choice-card').forEach(c => c.classList.remove('selected'));
+
+    pubState.dept = null;
+    pubState.slot = null;
+    pubState.photo = null;
+  }
+
   /* ================= SOUMISSION CLIENT ================= */
   document.getElementById('submitBtn').addEventListener('click', async () => {
     const name = document.getElementById('pubName').value.trim();
     const errorBox = document.getElementById('errorBox');
     const errorText = document.getElementById('errorText');
     const confirmCard = document.getElementById('confirmCard');
-    const formContent = document.getElementById('bookingFormContent');
     const submitBtn = document.getElementById('submitBtn');
 
     errorBox.classList.remove('show');
@@ -662,17 +675,25 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         createdAt: new Date().toISOString()
       });
 
-      // Masquage garanti du formulaire et affichage du composant de confirmation
-      formContent.setAttribute('style', 'display: none !important;');
+      // 1. Remplir et afficher le message de confirmation
       document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
       document.getElementById('confirmDetail').innerHTML = `
         <strong>Nom :</strong> ${name}<br>
         <strong>Département :</strong> ${pubState.dept}<br>
         <strong>Date :</strong> ${formatDateFrench(windowStatus.targetSundayStr)}<br>
-        <strong>Horaire :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
+        <strong>Horaire réservé :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
       `;
       confirmCard.classList.add('show');
-      confirmCard.scrollIntoView({ behavior: 'smooth' });
+
+      // 2. Défiler la page jusqu'au message de confirmation pour une excellente visibilité
+      confirmCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // 3. Réinitialiser le formulaire
+      resetForm();
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Réserver mon créneau";
+
     } catch(e) {
       submitBtn.disabled = false;
       submitBtn.innerText = "Réserver mon créneau";

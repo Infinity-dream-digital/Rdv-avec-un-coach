@@ -187,13 +187,13 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 }
 .appt-row.done{opacity:.4}
 .appt-row img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--g2);flex-shrink:0;cursor:zoom-in;transition:.15s}
-.appt-row img:hover{border-color:var(--black)}
+.appt-row img:hover{border-color:var(--black);transform:scale(1.08);}
 .appt-row .ai-name{font-weight:600;font-size:14.5px}
 .appt-row .ai-meta{font-size:12px;color:var(--g4);font-family:'IBM Plex Mono',monospace;margin-top:2px}
 .appt-row .ai-main{flex:1;min-width:180px}
 .appt-row .ai-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .appt-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--black)}
-.del-btn{background:none;border:1px solid var(--g2);width:30px;height:30px;font-size:14px;color:var(--g4)}
+.del-btn{background:none;border:1px solid var(--g2);width:30px;height:30px;font-size:14px;color:var(--g4);cursor:pointer;}
 .del-btn:hover{border-color:var(--red);color:var(--red)}
 .empty-state{padding:40px 0;text-align:center;color:var(--g3);font-size:13.5px}
 
@@ -202,18 +202,18 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
 /* ===== PHOTO ZOOM MODAL ===== */
 .photo-overlay{
-  position:fixed;inset:0;background:rgba(10,10,10,0.88);z-index:700;display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .2s;padding:24px;flex-direction:column;gap:16px;cursor:zoom-out;
+  position:fixed;inset:0;background:rgba(10,10,10,0.88);z-index:700;display:none;align-items:center;justify-content:center;
+  padding:24px;flex-direction:column;gap:16px;cursor:zoom-out;backdrop-filter:blur(5px);
 }
-.photo-overlay.open{opacity:1;pointer-events:all}
+.photo-overlay.open{display:flex;}
 .photo-overlay img{
   max-width:min(420px,90vw);max-height:70vh;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;
-  border:3px solid var(--white);
+  border:3px solid var(--white);box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .photo-overlay .po-name{color:var(--white);font-family:'Unbounded',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:.5px;text-align:center}
 .photo-overlay .po-close{
   position:absolute;top:20px;right:20px;background:none;border:1px solid rgba(255,255,255,0.4);color:var(--white);
-  width:36px;height:36px;font-size:16px;border-radius:50%;
+  width:36px;height:36px;font-size:16px;border-radius:50%;cursor:pointer;
 }
 
 @media (max-width:480px){
@@ -447,29 +447,27 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <div class="po-name" id="photoOverlayName"></div>
 </div>
 
-<!-- Inclusion des SDK Firebase Web (v10) -->
+<!-- ===== FIREBASE SDK & APPLICATION LOGIC ===== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { 
     getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc 
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // 1. REMPLACE PAR TA CONFIGURATION FIREBASE
+  // REMPLACE PAR TES IDENTIFIANTS DE CONSOLE FIREBASE
   const firebaseConfig = {
-   apiKey: "AIzaSyBYiCakntXSyBGebQXmA-vDBUi3xh1VmOw",
-   authDomain: "rdv-bloom.firebaseapp.com",
-   projectId: "rdv-bloom",
-   storageBucket: "rdv-bloom.firebasestorage.app",
-   messagingSenderId: "151685023076",
-   appId: "1:151685023076:web:06087df8ad296939e76671"
+    apiKey: "VOTRE_API_KEY",
+    authDomain: "VOTRE_PROJECT_ID.firebaseapp.com",
+    projectId: "VOTRE_PROJECT_ID",
+    storageBucket: "VOTRE_PROJECT_ID.appspot.com",
+    messagingSenderId: "VOTRE_SENDER_ID",
+    appId: "VOTRE_APP_ID"
   };
 
-  // Initialisation de Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const appointmentsRef = collection(db, "appointments");
 
-  /* ================= CONFIGURATION ================= */
   const ADMIN_CODE = "Protocoles2026";
   let appointments = [];
 
@@ -508,16 +506,16 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     let isOpen = false;
     let reason = "";
 
-    if (day === 5) { // Vendredi
+    if (day === 5) {
       if (currentMinutes >= (18 * 60 + 30)) isOpen = true;
       else reason = "Les réservations pour ce dimanche ouvrent ce vendredi à 18h30.";
-    } else if (day === 6) { // Samedi
+    } else if (day === 6) {
       isOpen = true;
-    } else if (day === 0) { // Dimanche
+    } else if (day === 0) {
       if (currentMinutes <= (19 * 60 + 30)) isOpen = true;
-      else reason = "Les réservations pour ce dimanche sont fermées (19h30 dépassé).";
+      else reason = "Les réservations pour ce dimanche sont désormais fermées (19h30 dépassé).";
     } else {
-      reason = "La prise de RDV est ouverte du vendredi 18h30 au dimanche 19h30.";
+      reason = "La prise de rendez-vous est disponible uniquement du vendredi 18h30 au dimanche 19h30.";
     }
 
     const currentSundayBookings = appointments.filter(a => a.date === targetSundayStr);
@@ -529,7 +527,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     return { isOpen, reason, targetSundayStr };
   }
 
-  /* ================= TEMPS RÉEL FIREBASE ================= */
+  /* ================= INITIALISATION & SUIVI TEMPS RÉEL ================= */
   document.addEventListener('DOMContentLoaded', () => {
     const windowStatus = checkWindowAvailability();
     document.getElementById('pubDateDisplay').value = formatDateFrench(windowStatus.targetSundayStr) + " (Dimanche)";
@@ -544,17 +542,15 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       formContent.style.pointerEvents = 'none';
     }
 
-    // Écoute en temps réel de la base de données
+    // Synchronisation en temps réel avec Firebase
     onSnapshot(appointmentsRef, (snapshot) => {
       appointments = [];
       snapshot.forEach((docSnap) => {
         appointments.push({ id: docSnap.id, ...docSnap.data() });
       });
 
-      // Met à jour l'affichage des heures chez tout le monde instantanément
       updateSlotCards(windowStatus.targetSundayStr);
 
-      // Si le panel admin est ouvert, on rafraîchit la liste
       if (document.getElementById('adminPanel').classList.contains('open')) {
         renderAdminList();
       }
@@ -581,7 +577,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     });
   }
 
-  /* ================= HELPERS SELECTION & PHOTO ================= */
+  /* ================= PHOTO UPLOAD & CHOICES ================= */
   function setupPhotoUpload(inputId, previewId, state){
     document.getElementById(inputId).addEventListener('change', function(){
       const file = this.files[0];
@@ -606,7 +602,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     });
   }
 
-  /* ================= ENREGISTREMENT DANS FIREBASE ================= */
+  /* ================= SOUMISSION CLIENT ================= */
   document.getElementById('submitBtn').addEventListener('click', async () => {
     const name = document.getElementById('pubName').value.trim();
     const errorBox = document.getElementById('errorBox');
@@ -621,23 +617,31 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       errorBox.classList.add('show');
       return;
     }
-    if (!name || !pubState.dept || !pubState.slot) {
-      errorText.innerText = "Veuillez remplir tous les champs.";
+    if (!name) {
+      errorText.innerText = "Veuillez entrer votre nom complet.";
+      errorBox.classList.add('show');
+      return;
+    }
+    if (!pubState.dept) {
+      errorText.innerText = "Veuillez sélectionner votre département.";
+      errorBox.classList.add('show');
+      return;
+    }
+    if (!pubState.slot) {
+      errorText.innerText = "Veuillez choisir une tranche horaire.";
       errorBox.classList.add('show');
       return;
     }
 
-    // Vérification de sécurité anti-doublon
     const exists = appointments.some(a => a.date === windowStatus.targetSundayStr && a.slot === pubState.slot);
     if (exists) {
-      errorText.innerText = "Ce créneau vient d'être réservé par quelqu'un d'autre.";
+      errorText.innerText = "Ce créneau a été réservé entre-temps. Veuillez en choisir un autre.";
       errorBox.classList.add('show');
       updateSlotCards(windowStatus.targetSundayStr);
       return;
     }
 
     try {
-      // Sauvegarde Firestore
       await addDoc(appointmentsRef, {
         name: name,
         photo: pubState.photo || null,
@@ -648,7 +652,6 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         createdAt: new Date().toISOString()
       });
 
-      // Masquer le formulaire et afficher le billet de confirmation
       document.getElementById('bookingFormContent').style.display = 'none';
       document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
       document.getElementById('confirmTitle').innerText = "Rendez-vous Confirmé !";
@@ -659,13 +662,13 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         <strong>Horaire :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
       `;
       confirmCard.classList.add('show');
-    } catch (e) {
-      errorText.innerText = "Erreur lors de l'enregistrement. Réessayez.";
+    } catch(e) {
+      errorText.innerText = "Une erreur s'est produite. Veuillez réessayer.";
       errorBox.classList.add('show');
     }
   });
 
-  /* ================= LOGIQUE ADMIN FIREBASE ================= */
+  /* ================= PANNEAU ADMINISTRATION ================= */
   const loginOverlay = document.getElementById('loginOverlay');
   const adminPanel = document.getElementById('adminPanel');
 
@@ -697,7 +700,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     filtered.sort((a, b) => a.date.localeCompare(b.date) || a.slot.localeCompare(b.slot));
 
     if (filtered.length === 0) {
-      listContainer.innerHTML = '<div class="empty-state">Aucun rendez-vous enregistré.</div>';
+      listContainer.innerHTML = '<div class="empty-state">Aucun rendez-vous enregistré pour le moment.</div>';
       return;
     }
 
@@ -707,25 +710,30 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       const photoSrc = a.photo || './Bloom Church-logo ok-03.png';
 
       row.innerHTML = `
-        <img src="${photoSrc}">
+        <img src="${photoSrc}" alt="Photo de ${a.name}">
         <div class="ai-main">
           <div class="ai-name">${a.name}</div>
           <div class="ai-meta">Dimanche ${formatDateFrench(a.date)} à ${a.slot.replace(':', 'h')} | ${a.dept}</div>
         </div>
         <div class="ai-actions">
           <label style="font-size:12px; display:flex; align-items:center; gap:4px;">
-            <input type="checkbox" ${a.done ? 'checked' : ''} class="toggle-done" data-id="${a.id}"> Fait
+            <input type="checkbox" ${a.done ? 'checked' : ''} class="toggle-done"> Fait
           </label>
-          <button class="del-btn" data-id="${a.id}">✕</button>
+          <button class="del-btn" title="Supprimer">✕</button>
         </div>
       `;
+
+      // ZOOM PHOTO AU CLIC DANS L'ADMIN
+      row.querySelector('img').addEventListener('click', () => {
+        openPhotoModal(photoSrc, `${a.name} (${a.dept})`);
+      });
 
       row.querySelector('.toggle-done').addEventListener('change', async (e) => {
         await updateDoc(doc(db, "appointments", a.id), { done: e.target.checked });
       });
 
       row.querySelector('.del-btn').addEventListener('click', async () => {
-        if (confirm("Supprimer ce rendez-vous ?")) {
+        if (confirm("Voulez-vous vraiment supprimer ce rendez-vous ?")) {
           await deleteDoc(doc(db, "appointments", a.id));
         }
       });
@@ -739,6 +747,63 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     document.getElementById('adminFilterDate').value = '';
     renderAdminList();
   });
+
+  /* ================= AJOUT MANUEL ADMIN ================= */
+  document.getElementById('adminSubmit').addEventListener('click', async () => {
+    const name = document.getElementById('adminName').value.trim();
+    const dept = document.getElementById('adminDept').value;
+    const date = document.getElementById('adminDate').value;
+    const slot = document.getElementById('adminSlot').value;
+    const errBox = document.getElementById('adminErrorBox');
+    const errText = document.getElementById('adminErrorText');
+
+    errBox.classList.remove('show');
+
+    if (!name || !date || !slot) {
+      errText.innerText = "Veuillez remplir tous les champs.";
+      errBox.classList.add('show');
+      return;
+    }
+
+    try {
+      await addDoc(appointmentsRef, {
+        name: name,
+        photo: adminState.photo || null,
+        dept: dept,
+        date: date,
+        slot: slot,
+        done: false,
+        createdAt: new Date().toISOString()
+      });
+
+      document.getElementById('adminName').value = '';
+      document.getElementById('adminPhoto').value = '';
+      document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+      adminState.photo = null;
+
+      alert("Rendez-vous ajouté avec succès !");
+    } catch(e) {
+      errText.innerText = "Erreur lors de l'ajout du rendez-vous.";
+      errBox.classList.add('show');
+    }
+  });
+
+  /* ================= MODAL PHOTO GRAND FORMAT ================= */
+  const photoOverlay = document.getElementById('photoOverlay');
+  const photoOverlayImg = document.getElementById('photoOverlayImg');
+  const photoOverlayName = document.getElementById('photoOverlayName');
+
+  function openPhotoModal(src, name) {
+    photoOverlayImg.src = src;
+    photoOverlayName.innerText = name;
+    photoOverlay.classList.add('open');
+  }
+
+  document.getElementById('photoOverlayClose').addEventListener('click', () => photoOverlay.classList.remove('open'));
+  photoOverlay.addEventListener('click', (e) => {
+    if (e.target === photoOverlay) photoOverlay.classList.remove('open');
+  });
 </script>
+
 </body>
 </html>

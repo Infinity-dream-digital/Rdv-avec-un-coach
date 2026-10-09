@@ -86,10 +86,13 @@ nav a:hover{border-color:var(--black)}
 @media (max-width:768px){.form-box{padding:32px 24px}}
 .field{margin-bottom:26px}
 .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--g4);margin-bottom:10px;font-weight:600}
-.field input[type=text],.field input[type=date],.field select{
+.field input[type=text],.field input[type=date],.field input[type=tel],.field select{
   width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px;outline:none;background:var(--white);
   transition:border-color .2s;
 }
+.phone-input{display:flex;align-items:stretch}
+.phone-prefix{display:flex;align-items:center;padding:0 14px;border:1px solid var(--g2);border-right:0;background:var(--g1);font-size:15px;font-weight:600}
+.phone-input input[type=tel]{min-width:0}
 .field input:focus,.field select:focus{border-color:var(--black)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media (max-width:600px){.field-row{grid-template-columns:1fr}}
@@ -244,7 +247,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <section class="hero">
   <span class="eyebrow">Coach Moise</span>
   <h1>Réservez votre moment<br>avec coach Moise</h1>
-  <p>Inscrivez-vous pour un entretien individuel de 25 minutes. Les réservations ouvrent chaque vendredi à 18h30 pour le dimanche à venir (8 places uniques).</p>
+  <p>Inscrivez-vous pour un entretien individuel de 20 minutes. Les réservations ouvrent le samedi à 10h pour le dimanche à venir et ferment dès que les 8 créneaux sont pris ou le dimanche à 18h.</p>
   <div class="hero-cta"><a href="#reserver" class="btn">Prendre rendez-vous</a></div>
 </section>
 
@@ -254,7 +257,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   <h2 style="font-size:clamp(22px,3.4vw,30px);text-transform:uppercase;text-align:center">Entretien individuel</h2>
   <div class="types-grid">
     <div class="type-info">
-      <div class="dur">25 <small>MIN</small></div>
+      <div class="dur">20 <small>MIN</small></div>
       <h3>Entretien</h3>
       <p>Un temps d'échange personnalisé et privilégié avec votre coach.</p>
     </div>
@@ -265,7 +268,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 <section>
   <span class="eyebrow">Comment ça marche ?</span>
   <div class="steps">
-    <div class="step"><span class="snum mono">01</span><h3>Ouverture</h3><p>Accès au formulaire dès le vendredi 18h30 pour le dimanche suivant.</p></div>
+    <div class="step"><span class="snum mono">01</span><h3>Ouverture</h3><p>Accès au formulaire dès le samedi à 10h pour le dimanche suivant.</p></div>
     <div class="step"><span class="snum mono">02</span><h3>Choisissez</h3><p>Sélectionnez l'un des 8 créneaux de 25 minutes encore disponibles.</p></div>
     <div class="step"><span class="snum mono">03</span><h3>C'est confirmé</h3><p>Votre rendez-vous est enregistré automatiquement pour le coach.</p></div>
   </div>
@@ -291,14 +294,22 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     <div id="bookingFormContent">
       <div class="field">
         <label>Votre nom complet</label>
-        <input type="text" id="pubName" placeholder="ex: Jean Kouassi">
+        <input type="text" id="pubName" placeholder="ex: Jean Kouassi" required>
+      </div>
+
+       <div class="field">
+        <label>Votre numéro de téléphone</label>
+        <div class="phone-input">
+          <span class="phone-prefix">+225</span>
+          <input type="tel" id="pubPhone" placeholder="07 xx xx xx xx" inputmode="tel" autocomplete="tel-national" required>
+        </div>
       </div>
 
       <div class="field">
         <label>Votre photo</label>
         <div class="photo-upload">
           <div class="photo-preview" id="pubPhotoPreview"><span class="ph-ph">＋</span></div>
-          <input type="file" id="pubPhoto" accept="image/*">
+          <input type="file" id="pubPhoto" accept="image/*" required>
         </div>
       </div>
 
@@ -331,11 +342,11 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
       <div class="field">
         <label>Date du rendez-vous</label>
-        <input type="text" id="pubDateDisplay" readonly style="background:var(--g1); font-weight:600; cursor:not-allowed;">
+        <input type="text" id="pubDateDisplay" readonly required style="background:var(--g1); font-weight:600; cursor:not-allowed;">
       </div>
 
       <div class="field">
-        <label>Choisissez votre tranche horaire (25 MIN)</label>
+        <label>Choisissez votre tranche horaire (20 MIN)</label>
         <div class="choice-grid slots" id="slotChoice">
           <div class="choice-card" data-slot="10:30"><div class="cname">10h30</div></div>
           <div class="choice-card" data-slot="11:15"><div class="cname">11h15</div></div>
@@ -400,18 +411,19 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     <div class="admin-add-box">
       <div class="field">
         <label>Nom complet</label>
-        <input type="text" id="adminName" placeholder="ex: Marie Diabaté">
+        <input type="text" id="adminName" placeholder="ex: Marie Diabaté" required>
       </div>
       <div class="field">
         <label>Photo</label>
         <div class="photo-upload">
           <div class="photo-preview" id="adminPhotoPreview"><span class="ph-ph">＋</span></div>
-          <input type="file" id="adminPhoto" accept="image/*">
+          <input type="file" id="adminPhoto" accept="image/*" required>
         </div>
       </div>
       <div class="field">
         <label>Département</label>
-        <select id="adminDept" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+        <select id="adminDept" required style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+          <option value="" disabled selected>Choisir un département</option>
           <option value="Aucun">Aucun</option>
           <option value="ADN">ADN</option>
           <option value="Bloom 121">Bloom 121</option>
@@ -429,10 +441,11 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         </select>
       </div>
       <div class="field-row">
-        <div class="field"><label>Date (Dimanche)</label><input type="date" id="adminDate"></div>
+        <div class="field"><label>Date (Dimanche)</label><input type="date" id="adminDate" required></div>
         <div class="field">
           <label>Heure</label>
-          <select id="adminSlot" style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+          <select id="adminSlot" required style="width:100%;padding:13px 14px;border:1px solid var(--g2);font-size:15px">
+            <option value="" disabled selected>Choisir une heure</option>
             <option value="10:30">10h30</option>
             <option value="11:15">11h15</option>
             <option value="12:00">12h00</option>
@@ -483,6 +496,8 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
   const ADMIN_CODE = "Protocoles2026";
   let appointments = [];
+  let appointmentsLoaded = false;
+  const BOOKING_SLOTS = ['10:30', '11:15', '12:00', '16:30', '17:15', '18:00', '18:45', '19:30'];
 
   const pubState = { dept: null, slot: null, photo: null };
   const adminState = { photo: null };
@@ -519,22 +534,27 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     let isOpen = false;
     let reason = "";
 
-    if (day === 5) {
-      if (currentMinutes >= (18 * 60 + 30)) isOpen = true;
-      else reason = "Les réservations pour ce dimanche ouvrent ce vendredi à 18h30.";
-    } else if (day === 6) {
-      isOpen = true;
+    if (day === 6) {
+      if (currentMinutes >= (10 * 60)) isOpen = true;
+      else reason = "Les réservations pour ce dimanche ouvrent samedi à 10h.";
     } else if (day === 0) {
-      if (currentMinutes <= (19 * 60 + 30)) isOpen = true;
-      else reason = "Les réservations pour ce dimanche sont désormais fermées (19h30 dépassé).";
+      if (currentMinutes < (18 * 60)) isOpen = true;
+      else reason = "Les réservations sont fermées depuis dimanche 18h.";
     } else {
-      reason = "La prise de rendez-vous est disponible uniquement du vendredi 18h30 au dimanche 19h30.";
+      reason = "La prise de rendez-vous est disponible du samedi à 10h au dimanche à 18h.";
     }
 
-    const currentSundayBookings = appointments.filter(a => a.date === targetSundayStr);
-    if (isOpen && currentSundayBookings.length >= 8) {
+    if (!appointmentsLoaded && isOpen) {
       isOpen = false;
-      reason = "Tous les 8 créneaux pour ce dimanche sont déjà occupés.";
+      reason = "Vérification des créneaux disponibles...";
+    }
+
+    const takenSlots = new Set(
+      appointments.filter(a => a.date === targetSundayStr).map(a => a.slot)
+    );
+    if (isOpen && BOOKING_SLOTS.every(slot => takenSlots.has(slot))) {
+      isOpen = false;
+      reason = "Tous les créneaux pour ce dimanche sont déjà réservés.";
     }
 
     return { isOpen, reason, targetSundayStr };
@@ -542,18 +562,26 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
   /* ================= INITIALISATION & SUIVI TEMPS RÉEL ================= */
   document.addEventListener('DOMContentLoaded', () => {
-    const windowStatus = checkWindowAvailability();
-    document.getElementById('pubDateDisplay').value = formatDateFrench(windowStatus.targetSundayStr) + " (Dimanche)";
-
     const closedNotice = document.getElementById('bookingClosedNotice');
     const formContent = document.getElementById('bookingFormContent');
+    const submitBtn = document.getElementById('submitBtn');
 
-    if (!windowStatus.isOpen) {
+    function refreshBookingAvailability() {
+      const windowStatus = checkWindowAvailability();
+      document.getElementById('pubDateDisplay').value = formatDateFrench(windowStatus.targetSundayStr) + " (Dimanche)";
       closedNotice.innerText = windowStatus.reason;
-      closedNotice.classList.add('show');
-      formContent.style.opacity = '0.5';
-      formContent.style.pointerEvents = 'none';
+      closedNotice.classList.toggle('show', !windowStatus.isOpen);
+      closedNotice.style.display = windowStatus.isOpen ? 'none' : 'block';
+      formContent.style.opacity = windowStatus.isOpen ? '1' : '0.5';
+      formContent.style.pointerEvents = windowStatus.isOpen ? '' : 'none';
+      submitBtn.disabled = !windowStatus.isOpen;
+      formContent.querySelectorAll('input').forEach(input => {
+        input.disabled = !windowStatus.isOpen;
+      });
+      updateSlotCards(windowStatus.targetSundayStr);
     }
+
+    refreshBookingAvailability();
 
     // Synchronisation en temps réel avec Firebase
     onSnapshot(appointmentsRef, (snapshot) => {
@@ -561,13 +589,17 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       snapshot.forEach((docSnap) => {
         appointments.push({ id: docSnap.id, ...docSnap.data() });
       });
+      appointmentsLoaded = true;
 
-      updateSlotCards(windowStatus.targetSundayStr);
+      refreshBookingAvailability();
 
       if (document.getElementById('adminPanel').classList.contains('open')) {
         renderAdminList();
       }
     });
+
+    // Rafraîchit automatiquement l'ouverture/la fermeture à l'heure prévue.
+    setInterval(refreshBookingAvailability, 30000);
 
     setupPhotoUpload('pubPhoto', 'pubPhotoPreview', pubState);
     setupPhotoUpload('adminPhoto', 'adminPhotoPreview', adminState);
@@ -617,6 +649,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
   function resetForm() {
     document.getElementById('pubName').value = '';
+    document.getElementById('pubPhone').value = '';
     document.getElementById('pubPhoto').value = '';
     document.getElementById('pubPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
     
@@ -631,6 +664,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
   /* ================= SOUMISSION CLIENT ================= */
   document.getElementById('submitBtn').addEventListener('click', async () => {
     const name = document.getElementById('pubName').value.trim();
+    const phone = document.getElementById('pubPhone').value.trim();
     const errorBox = document.getElementById('errorBox');
     const errorText = document.getElementById('errorText');
     const confirmCard = document.getElementById('confirmCard');
@@ -646,6 +680,16 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     }
     if (!name) {
       errorText.innerText = "Veuillez entrer votre nom complet.";
+      errorBox.classList.add('show');
+      return;
+    }
+    if (!phone) {
+      errorText.innerText = "Veuillez entrer votre numéro de téléphone.";
+      errorBox.classList.add('show');
+      return;
+    }
+    if (!document.getElementById('pubPhoto').files.length || !pubState.photo) {
+      errorText.innerText = "Veuillez ajouter votre photo.";
       errorBox.classList.add('show');
       return;
     }
@@ -674,6 +718,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
 
       await addDoc(appointmentsRef, {
         name: name,
+        phone: `+225 ${phone}`,
         photo: pubState.photo || null,
         dept: pubState.dept,
         date: windowStatus.targetSundayStr,
@@ -686,6 +731,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       document.getElementById('confirmPhoto').src = pubState.photo || './Bloom Church-logo ok-03.png';
       document.getElementById('confirmDetail').innerHTML = `
         <strong>Nom :</strong> ${name}<br>
+        <strong>Téléphone :</strong> +225 ${phone}<br>
         <strong>Département :</strong> ${pubState.dept}<br>
         <strong>Date :</strong> ${formatDateFrench(windowStatus.targetSundayStr)}<br>
         <strong>Horaire réservé :</strong> ${pubState.slot.replace(':', 'h')} (45 min)
@@ -754,7 +800,7 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
         <img src="${photoSrc}" alt="Photo de ${a.name}">
         <div class="ai-main">
           <div class="ai-name">${a.name}</div>
-          <div class="ai-meta">Dimanche ${formatDateFrench(a.date)} à ${a.slot.replace(':', 'h')} | ${a.dept}</div>
+          <div class="ai-meta">${a.phone ? `${a.phone} | ` : ''}Dimanche ${formatDateFrench(a.date)} à ${a.slot.replace(':', 'h')} | ${a.dept}</div>
         </div>
         <div class="ai-actions">
           <label style="font-size:12px; display:flex; align-items:center; gap:4px;">
@@ -795,12 +841,13 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
     const dept = document.getElementById('adminDept').value;
     const date = document.getElementById('adminDate').value;
     const slot = document.getElementById('adminSlot').value;
+    const photoInput = document.getElementById('adminPhoto');
     const errBox = document.getElementById('adminErrorBox');
     const errText = document.getElementById('adminErrorText');
 
     errBox.classList.remove('show');
 
-    if (!name || !date || !slot) {
+    if (!name || !dept || !date || !slot || !photoInput.files.length || !adminState.photo) {
       errText.innerText = "Veuillez remplir tous les champs.";
       errBox.classList.add('show');
       return;
@@ -820,6 +867,8 @@ footer .fnote{font-size:12px;color:var(--g3);font-family:'IBM Plex Mono',monospa
       document.getElementById('adminName').value = '';
       document.getElementById('adminPhoto').value = '';
       document.getElementById('adminPhotoPreview').innerHTML = '<span class="ph-ph">＋</span>';
+      document.getElementById('adminDept').value = '';
+      document.getElementById('adminSlot').value = '';
       adminState.photo = null;
 
       alert("Rendez-vous ajouté avec succès !");
